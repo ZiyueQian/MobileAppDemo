@@ -6,16 +6,17 @@ import 'package:greenwaydispatch/views/newDispatch/truckContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/logisticsContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/containerContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/handContactView.dart';
+import 'package:greenwaydispatch/views/newDispatch/otherContactView.dart';
 
-class DispatchReferenceView extends StatefulWidget {
+class DispatchInfoView extends StatefulWidget {
   final Dispatch dispatch;
-  DispatchReferenceView({Key key, @required this.dispatch}) : super(key: key);
+  DispatchInfoView({Key key, @required this.dispatch}) : super(key: key);
 
   @override
-  _DispatchReferenceViewState createState() => _DispatchReferenceViewState();
+  _DispatchInfoViewState createState() => _DispatchInfoViewState();
 }
 
-class _DispatchReferenceViewState extends State<DispatchReferenceView> {
+class _DispatchInfoViewState extends State<DispatchInfoView> {
   String value = "Select";
 
   @override
@@ -99,7 +100,7 @@ class _DispatchReferenceViewState extends State<DispatchReferenceView> {
                       () => widget.dispatch.dispatchAmount = int.parse(val)))),
           Expanded(
               child: GridView.count(
-            crossAxisCount: 4,
+            crossAxisCount: 5,
             scrollDirection: Axis.vertical,
             primary: false,
             children: List.generate(dispatchTypes.length, (index) {
@@ -108,7 +109,10 @@ class _DispatchReferenceViewState extends State<DispatchReferenceView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     dispatchTypes[dispatchKeys[index]],
-                    Text(dispatchKeys[index]),
+                    Text(
+                      dispatchKeys[index],
+                      style: TextStyle(fontSize: 11.0),
+                    ),
                   ],
                 ),
                 //color: Colors.green[100],
@@ -145,12 +149,18 @@ class _DispatchReferenceViewState extends State<DispatchReferenceView> {
                     MaterialPageRoute(
                         builder: (context) =>
                             ContainerContactView(dispatch: widget.dispatch)));
-              } else {
+              } else if (widget.dispatch.dispatchType == 'hand') {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
                             HandContactView(dispatch: widget.dispatch)));
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            OtherContactView(dispatch: widget.dispatch)));
               }
               ;
             },

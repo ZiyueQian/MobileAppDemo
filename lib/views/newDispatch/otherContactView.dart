@@ -1,19 +1,19 @@
-//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING LOGISTICS DELIVERY
+//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING 'OTHER' DELIVERY METHOD
 
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 
-class LogisticsContactView extends StatefulWidget {
+class OtherContactView extends StatefulWidget {
   final Dispatch dispatch;
   //final DispatchContact dispatchContact;
-  LogisticsContactView({Key key, @required this.dispatch}) : super(key: key);
+  OtherContactView({Key key, @required this.dispatch}) : super(key: key);
 
   @override
-  _LogisticsContactViewState createState() => _LogisticsContactViewState();
+  _OtherContactViewState createState() => _OtherContactViewState();
 }
 
-class _LogisticsContactViewState extends State<LogisticsContactView> {
+class _OtherContactViewState extends State<OtherContactView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,33 +29,10 @@ class _LogisticsContactViewState extends State<LogisticsContactView> {
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
                 decoration: InputDecoration(
-                    icon: Icon(Icons.local_post_office),
-                    labelText: 'Docket number',
-                    helperText: 'e.g. AB123ABC1234',
-                    border: const OutlineInputBorder()),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter docket number';
-                  }
-                },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckNumber = val)
-              )),
-          Container(
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
-              child: TextFormField(
-                decoration: InputDecoration(
                     icon: Icon(Icons.perm_identity),
-                    labelText: 'Contact person',
+                    labelText: 'Contact name',
                     helperText: 'e.g. Ankit Mathur',
                     border: const OutlineInputBorder()),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return "Please enter contact person's name";
-                  }
-                },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckDriver = val)
               )),
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
@@ -65,13 +42,14 @@ class _LogisticsContactViewState extends State<LogisticsContactView> {
                     labelText: 'Contact number',
                     helperText: 'e.g. 1234567890',
                     border: const OutlineInputBorder()),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter phone number';
-                  }
-                },
-//                  onSaved: (val) => setState(
-//                      () => widget.dispatch.truckDriverNumber1 = val)
+              )),
+          Container(
+              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+              child: TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.reorder),
+                    labelText: 'Description',
+                    border: const OutlineInputBorder()),
               )),
           RaisedButton(
             child: Text("Next"),

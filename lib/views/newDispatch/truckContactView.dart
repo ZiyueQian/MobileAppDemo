@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
+import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 
 class TruckContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -84,9 +85,12 @@ class _TruckContactViewState extends State<TruckContactView> {
 //                      () => widget.dispatch.truckDriverNumber2 = val)
               )),
           RaisedButton(
-            child: Text("Finish"),
+            child: Text("Next"),
             onPressed: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => QRView(dispatch: widget.dispatch)));
             },
           ),
           //onSaved: (val) => setState(() => _user.truckNumber = val))),

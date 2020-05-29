@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'views/HomeView.dart';
 import 'views/HistoryView.dart';
 import 'views/HistoryView.dart';
-import 'views/newDispatch/referenceView.dart';
+import 'views/newDispatch/infoView.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 
 class Home extends StatefulWidget {
@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        DispatchReferenceView(dispatch: newDispatch)),
+                        DispatchInfoView(dispatch: newDispatch)),
               );
             },
           )

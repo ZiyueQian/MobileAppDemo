@@ -15,5 +15,6 @@ class Dispatch {
         "logistics": Icon(Icons.local_post_office),
         "hand": Icon(Icons.transfer_within_a_station),
         "container": Icon(Icons.flight_takeoff),
+        "other": Icon(Icons.group),
       };
 }
