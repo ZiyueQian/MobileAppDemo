@@ -14,7 +14,16 @@ class Dispatch {
         "truck": Icon(Icons.local_shipping),
         "logistics": Icon(Icons.local_post_office),
         "hand": Icon(Icons.transfer_within_a_station),
-        "container": Icon(Icons.flight_takeoff),
+        "container": Icon(Icons.directions_boat),
         "other": Icon(Icons.group),
       };
 }
+
+//class DispatchDashboard {
+//  //record of the last 15 days
+//  int totalDispatch;
+//  int delivered;
+//  int delivering;
+//
+//  DispatchDashboard(this.totalDispatch, this.delivered, this.delivering);
+//}

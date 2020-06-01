@@ -29,7 +29,7 @@ class _ContainerContactViewState extends State<ContainerContactView> {
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
                 decoration: InputDecoration(
-                    icon: Icon(Icons.flight_takeoff),
+                    icon: Icon(Icons.directions_boat),
                     labelText: 'Container number',
                     helperText: 'e.g. ABCD123456',
                     border: const OutlineInputBorder()),
