@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
+import 'dispatchDetailsView.dart';
 
 class HomeView extends StatelessWidget {
   final List<Dispatch> dispatchList = [
@@ -61,45 +62,55 @@ class HomeView extends StatelessWidget {
   Widget buildDispatchCard(BuildContext context, int index) {
     final dispatch = dispatchList[index];
     return new Container(
-      child: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Column(children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.local_shipping),
-                    SizedBox(
-                      width: 60.0,
-                    ),
-                    Text(
-                      dispatch.dispatchRecord,
-                      style: new TextStyle(fontSize: 20.0),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 3.0, horizontal: 5.0),
-                        decoration: new BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(2.0),
-                        ),
-                        child: Text(dispatch.dispatchAmount.toString())),
-                    SizedBox(width: 10.0),
-                    Icon(Icons.keyboard_arrow_right),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 8.0),
-            Divider(
-              color: Colors.grey,
-            )
-          ])),
+      child: InkWell(
+        child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Column(children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.local_shipping),
+                      SizedBox(
+                        width: 60.0,
+                      ),
+                      Text(
+                        dispatch.dispatchRecord,
+                        style: new TextStyle(fontSize: 20.0),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 3.0, horizontal: 5.0),
+                          decoration: new BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(2.0),
+                          ),
+                          child: Text(dispatch.dispatchAmount.toString())),
+                      SizedBox(width: 10.0),
+                      Icon(Icons.keyboard_arrow_right),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.0),
+              Divider(
+                color: Colors.grey,
+              )
+            ])),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DispatchDetailsView(
+                        dispatch: dispatch,
+                      )));
+        },
+      ),
     );
   }
 
