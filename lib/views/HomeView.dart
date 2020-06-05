@@ -1,11 +1,13 @@
 //THIS IS THE PAGE FOR THE HISTORY TAB ON THE HOME SCREEN.
 //CURRENTLY USING DUMMY DATA TO SIMULATE INFORMATION FOR WHAT'S BEEN DISPATCHED.
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
+import 'dashBoardView.dart';
 
 class HomeView extends StatelessWidget {
   final List<Dispatch> dispatchList = [
@@ -21,8 +23,9 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(15.0),
           children: <Widget>[
             Text('Dispatch now',
                 style: TextStyle(
@@ -46,6 +49,7 @@ class HomeView extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
+            Container(child: Chart()),
             Container(
               child: new ListView.builder(
                 scrollDirection: Axis.vertical,
@@ -153,6 +157,50 @@ class HomeView extends StatelessWidget {
               color: Colors.grey,
             )
           ])),
+    );
+  }
+}
+
+class Chart extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _ChartState();
+  }
+}
+
+class _ChartState extends State<Chart> {
+  List<PieChartSectionData> _sections = List<PieChartSectionData>();
+
+  @override
+  void initState() {
+    super.initState();
+    PieChartSectionData _dispatching = PieChartSectionData(
+        color: Colors.lightGreenAccent,
+        value: 50,
+        title: 'In delivery: 50',
+        titleStyle: TextStyle(color: Colors.black),
+        radius: 50);
+    PieChartSectionData _delivered = PieChartSectionData(
+        color: Colors.yellow,
+        value: 100,
+        title: 'Delivered: 100',
+        titleStyle: TextStyle(color: Colors.black),
+        radius: 50);
+    _sections = [_dispatching, _delivered];
+  }
+
+  Widget build(BuildContext context) {
+    return Container(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: FlChart(
+            chart: PieChart(PieChartData(
+          sections: _sections,
+          borderData: FlBorderData(show: false),
+          centerSpaceRadius: 40,
+          sectionsSpace: 0,
+        ))),
+      ),
     );
   }
 }
