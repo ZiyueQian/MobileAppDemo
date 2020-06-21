@@ -88,12 +88,13 @@ class HistoryView extends StatelessWidget {
               )
             ])),
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DispatchDetailsView(
-                        dispatch: dispatch,
-                      )));
+//          Navigator.push(
+//              context,
+//              MaterialPageRoute(
+//                  builder: (context) => DispatchDetailsView(
+//                        dispatch: dispatch,
+//                      ))
+//          );
         },
       ),
     );

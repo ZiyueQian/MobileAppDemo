@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'views/HomeView.dart';
 import 'views/HistoryView.dart';
-import 'views/HistoryView.dart';
 import 'views/newDispatch/infoView.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 
@@ -16,17 +15,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
+  //final List<Widget> _children = ;
+  final List<Widget> _screens = [
     HomeView(),
     HistoryView(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final newDispatch = new Dispatch(null, null, null, null);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dispatch'),
+        title: Text('Dispatch Executive'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
@@ -41,7 +46,10 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      body: _children[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,

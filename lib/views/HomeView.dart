@@ -8,8 +8,17 @@ import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
 import 'dashBoardView.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView>
+    with AutomaticKeepAliveClientMixin<HomeView> {
   final List<Dispatch> dispatchList = [
     Dispatch("2020-05-1111", DateTime.now(), 5, "local_shipping"),
     Dispatch("2020-05-1112", DateTime.now(), 100, "local_post_office"),
@@ -19,8 +28,36 @@ class HomeView extends StatelessWidget {
 
   final dispatchDashboard = [150, 100, 50];
 
+  var showData;
+  Future _loadData;
+  File jsonFile;
+  Directory dir;
+  String fileName = "myFile.json";
+  bool fileExists = false;
+  Map<String, dynamic> fileContent;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    getApplicationDocumentsDirectory().then((Directory directory) {
+      dir = directory;
+      jsonFile = new File(dir.path + "/" + fileName);
+      fileExists = jsonFile.existsSync();
+      if (fileExists)
+        this.setState(
+            () => fileContent = json.decode(jsonFile.readAsStringSync()));
+    });
+    //Future loadData =  // only create the future once.
+    //_loadData = loadData;
+    print("initialized home!");
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
         margin: EdgeInsets.all(16.0),
         child: ListView(
@@ -33,14 +70,30 @@ class HomeView extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
-            Container(
-              child: new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dispatchList.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    buildDispatchCard(context, index),
-              ),
+//            FutureBuilder(
+//              future: _loadData,
+//              builder: (context, snapshot) {
+//                showData = json.decode(snapshot.data.toString());
+//                return showData != null
+//                    ? ListView.builder(
+//                  scrollDirection: Axis.vertical,
+//                  shrinkWrap: true,
+//                  itemBuilder: (BuildContext context, int index) =>
+//                      buildDispatchCard(context, index),
+//                  itemCount: showData.length,
+//                )
+//                    : Container(
+//                  child: Text("Nothing to dispatch!",
+//                      style: new TextStyle(fontSize: 20.0)),
+//                );
+//              },
+//            ),
+            ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (BuildContext context, int index) =>
+                  buildDispatchCard(context, index),
+              itemCount: 3,
             ),
             SizedBox(height: 8.0),
             Text('Last 15 days',
@@ -64,7 +117,21 @@ class HomeView extends StatelessWidget {
   }
 
   Widget buildDispatchCard(BuildContext context, int index) {
-    final dispatch = dispatchList[index];
+    String indexString = index.toString();
+    final dispatch = fileContent[indexString];
+
+    //matching the dispatch type to the correct icon
+    var dispatchIcon = Icon(Icons.group);
+    if (dispatch['dispatchType'] == 'truck') {
+      dispatchIcon = Icon(Icons.local_shipping);
+    } else if (dispatch['dispatchType'] == 'logistics') {
+      dispatchIcon = Icon(Icons.local_post_office);
+    } else if (dispatch['dispatchType'] == 'hand') {
+      dispatchIcon = Icon(Icons.transfer_within_a_station);
+    } else if (dispatch['dispatchType'] == 'container') {
+      dispatchIcon = Icon(Icons.directions_boat);
+    }
+
     return new Container(
       child: InkWell(
         child: Padding(
@@ -75,12 +142,12 @@ class HomeView extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Icon(Icons.local_shipping),
+                      dispatchIcon,
                       SizedBox(
                         width: 60.0,
                       ),
                       Text(
-                        dispatch.dispatchRecord,
+                        dispatch['dispatchRecord'],
                         style: new TextStyle(fontSize: 20.0),
                       ),
                     ],
@@ -94,7 +161,7 @@ class HomeView extends StatelessWidget {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(2.0),
                           ),
-                          child: Text(dispatch.dispatchAmount.toString())),
+                          child: Text(dispatch['dispatchAmount'])),
                       SizedBox(width: 10.0),
                       Icon(Icons.keyboard_arrow_right),
                     ],
@@ -111,7 +178,7 @@ class HomeView extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => DispatchDetailsView(
-                        dispatch: dispatch,
+                        data: dispatch,
                       )));
         },
       ),
