@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
 import 'dashBoardView.dart';
+import '../views/newDispatch/infoView.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
@@ -37,22 +38,21 @@ class _HomeViewState extends State<HomeView>
   Map<String, dynamic> fileContent;
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   @override
   void initState() {
     super.initState();
-    getApplicationDocumentsDirectory().then((Directory directory) {
+    print("initialized home!");
+    Future loadData =
+        getApplicationDocumentsDirectory().then((Directory directory) {
       dir = directory;
       jsonFile = new File(dir.path + "/" + fileName);
-      fileExists = jsonFile.existsSync();
-      if (fileExists)
-        this.setState(
-            () => fileContent = json.decode(jsonFile.readAsStringSync()));
-    });
-    //Future loadData =  // only create the future once.
-    //_loadData = loadData;
-    print("initialized home!");
+      fileExists = true;
+      fileContent = json.decode(jsonFile.readAsStringSync());
+      if (fileExists) return jsonFile;
+    }); // only create the future once.
+    _loadData = loadData;
   }
 
   @override
@@ -70,31 +70,30 @@ class _HomeViewState extends State<HomeView>
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
-//            FutureBuilder(
-//              future: _loadData,
-//              builder: (context, snapshot) {
-//                showData = json.decode(snapshot.data.toString());
-//                return showData != null
-//                    ? ListView.builder(
-//                  scrollDirection: Axis.vertical,
-//                  shrinkWrap: true,
-//                  itemBuilder: (BuildContext context, int index) =>
-//                      buildDispatchCard(context, index),
-//                  itemCount: showData.length,
-//                )
-//                    : Container(
-//                  child: Text("Nothing to dispatch!",
-//                      style: new TextStyle(fontSize: 20.0)),
-//                );
-//              },
-//            ),
-            ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) =>
-                  buildDispatchCard(context, index),
-              itemCount: 3,
+            FutureBuilder(
+              future: _loadData,
+              builder: (context, snapshot) {
+                return fileContent != null
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) =>
+                            buildDispatchCard(context, index),
+                        itemCount: fileContent.length,
+                      )
+                    : Container(
+                        child: Text("Nothing to dispatch!",
+                            style: new TextStyle(fontSize: 20.0)),
+                      );
+              },
             ),
+//            ListView.builder(
+//              scrollDirection: Axis.vertical,
+//              shrinkWrap: true,
+//              itemBuilder: (BuildContext context, int index) =>
+//                  buildDispatchCard(context, index),
+//              itemCount: 3,
+//            ),
             SizedBox(height: 8.0),
             Text('Last 15 days',
                 style: TextStyle(

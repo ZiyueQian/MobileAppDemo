@@ -61,7 +61,10 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
   @override
   void initState() {
     super.initState();
+
     print("INITIALIZED INFO PAGE");
+    print("counter:");
+    print(counter);
     getApplicationDocumentsDirectory().then((Directory directory) {
       dir = directory;
       jsonFile = new File(dir.path + "/" + fileName);
@@ -100,10 +103,10 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
       "dispatchAmount": dispatchAmount,
       "dispatchType": dispatchType
     };
-    String index = counter.toString();
-    counter++;
-    Map<String, dynamic> contentBlock = {index: content};
     if (fileExists) {
+      String index = counter.toString();
+      counter++;
+      Map<String, dynamic> contentBlock = {index: content};
       print("File exists");
       Map<String, dynamic> jsonFileContent =
           json.decode(jsonFile.readAsStringSync());
