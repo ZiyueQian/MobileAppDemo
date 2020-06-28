@@ -45,7 +45,7 @@ class _TruckContactViewState extends State<TruckContactView> {
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
                 decoration: InputDecoration(
-                    icon: Icon(Icons.perm_identity),
+                    icon: Icon(Icons.person),
                     labelText: 'Driver name',
                     helperText: 'e.g. Ankit Mathur',
                     border: const OutlineInputBorder()),

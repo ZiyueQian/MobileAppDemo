@@ -29,7 +29,7 @@ class _OtherContactViewState extends State<OtherContactView> {
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
                 decoration: InputDecoration(
-                    icon: Icon(Icons.perm_identity),
+                    icon: Icon(Icons.person),
                     labelText: 'Contact name',
                     helperText: 'e.g. Ankit Mathur',
                     border: const OutlineInputBorder()),

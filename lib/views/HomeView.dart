@@ -1,7 +1,6 @@
 //THIS IS THE PAGE FOR THE HISTORY TAB ON THE HOME SCREEN.
 //CURRENTLY USING DUMMY DATA TO SIMULATE INFORMATION FOR WHAT'S BEEN DISPATCHED.
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +11,8 @@ import '../views/newDispatch/infoView.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'chart.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -128,7 +129,7 @@ class _HomeViewState extends State<HomeView>
     } else if (dispatch['dispatchType'] == 'hand') {
       dispatchIcon = Icon(Icons.transfer_within_a_station);
     } else if (dispatch['dispatchType'] == 'container') {
-      dispatchIcon = Icon(Icons.directions_boat);
+      dispatchIcon = Icon(FlutterIcons.stepforward_ant);
     }
 
     return new Container(
@@ -226,51 +227,3 @@ class _HomeViewState extends State<HomeView>
     );
   }
 }
-
-class Chart extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _ChartState();
-  }
-}
-
-class _ChartState extends State<Chart> {
-  List<PieChartSectionData> _sections = List<PieChartSectionData>();
-
-  @override
-  void initState() {
-    super.initState();
-    PieChartSectionData _dispatching = PieChartSectionData(
-        color: Colors.lightGreenAccent,
-        value: 50,
-        title: 'In delivery: 50',
-        titleStyle: TextStyle(color: Colors.black),
-        radius: 50);
-    PieChartSectionData _delivered = PieChartSectionData(
-        color: Colors.yellow,
-        value: 100,
-        title: 'Delivered: 100',
-        titleStyle: TextStyle(color: Colors.black),
-        radius: 50);
-    _sections = [_dispatching, _delivered];
-  }
-
-  Widget build(BuildContext context) {
-    return Container(
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: FlChart(
-            chart: PieChart(PieChartData(
-          sections: _sections,
-          borderData: FlBorderData(show: false),
-          centerSpaceRadius: 40,
-          sectionsSpace: 0,
-        ))),
-      ),
-    );
-  }
-}
-
-//Text(DateFormat('dd/MM/yyyy')
-//.format(dispatch.dispatchTime)
-//.toString()),

@@ -62,7 +62,7 @@ class _HandContactViewState extends State<HandContactView> {
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
               child: TextFormField(
                 decoration: InputDecoration(
-                    icon: Icon(Icons.perm_identity),
+                    icon: Icon(Icons.person),
                     labelText: 'Contact person',
                     helperText: 'e.g. Ankit Mathur',
                     border: const OutlineInputBorder()),
