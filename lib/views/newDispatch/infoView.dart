@@ -9,10 +9,8 @@ import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/logistic
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/containerContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/handContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/otherContactView.dart';
-import 'dart:io';
-import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:hive/hive.dart';
 
 class DispatchInfoView extends StatefulWidget {
   final Dispatch dispatch;
@@ -22,57 +20,27 @@ class DispatchInfoView extends StatefulWidget {
   _DispatchInfoViewState createState() => _DispatchInfoViewState();
 }
 
-class NewDispatch {
-  String dispatchRecord;
-  String dispatchAmount;
-  String dispatchType;
-  String dispatchTime;
-  NewDispatch(
-      {this.dispatchRecord,
-      this.dispatchAmount,
-      this.dispatchType,
-      this.dispatchTime});
-
-  toJson() {
-    return {
-      "dispatchRecord": dispatchRecord,
-      "dispatchTime": dispatchTime,
-      "dispatchAmount": dispatchAmount,
-      "dispatchType": dispatchType,
-    };
-  }
-}
-
 class _DispatchInfoViewState extends State<DispatchInfoView> {
   TextEditingController recordInputController = new TextEditingController();
   TextEditingController amountInputController = new TextEditingController();
+  String _dispatchRecord;
+  int _dispatchAmount;
+  String _dispatchType;
+
+  void addDispatch(Dispatch dispatch) {
+    final dispatchBox = Hive.box('dispatch');
+    dispatchBox.add(dispatch);
+    print("adding dispatch! ");
+  }
+
   String value = "Select dispatch confirmation";
   var selectedCard = 'OTHER'; //dispatch types buttons
-  String _dispatchRecord;
-  var _dispatchAmount;
-  String _dispatchType;
-  File jsonFile;
-  Directory dir;
-  String fileName = "myFile.json";
-  bool fileExists = false;
-  Map<String, dynamic> fileContent;
-  int counter = 0;
 
   @override
   void initState() {
     super.initState();
 
     print("INITIALIZED INFO PAGE");
-    print("counter:");
-    print(counter);
-    getApplicationDocumentsDirectory().then((Directory directory) {
-      dir = directory;
-      jsonFile = new File(dir.path + "/" + fileName);
-      fileExists = jsonFile.existsSync();
-      if (fileExists)
-        this.setState(
-            () => fileContent = json.decode(jsonFile.readAsStringSync()));
-    });
   }
 
   @override
@@ -80,45 +48,6 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
     recordInputController.dispose();
     amountInputController.dispose();
     super.dispose();
-  }
-
-  void createFile(
-      Map<String, dynamic> content, Directory dir, String fileName) {
-    print("Creating file!");
-    File file = new File(dir.path + "/" + fileName);
-    file.createSync();
-    fileExists = true;
-    String index = counter.toString();
-    counter++;
-    Map<String, dynamic> contentBlock = {index: content};
-    file.writeAsStringSync(json.encode(contentBlock));
-  }
-
-  void writeToFile(
-      String dispatchRecord, String dispatchAmount, String dispatchType) {
-    print("Writing to file!");
-    Map<String, dynamic> content = {
-      "dispatchRecord": dispatchRecord,
-      "dispatchTime": "today",
-      "dispatchAmount": dispatchAmount,
-      "dispatchType": dispatchType
-    };
-    if (fileExists) {
-      String index = counter.toString();
-      counter++;
-      Map<String, dynamic> contentBlock = {index: content};
-      print("File exists");
-      Map<String, dynamic> jsonFileContent =
-          json.decode(jsonFile.readAsStringSync());
-      jsonFileContent.addAll(contentBlock);
-      jsonFile.writeAsStringSync(json.encode(jsonFileContent));
-    } else {
-      print("File does not exist!");
-      createFile(content, dir, fileName);
-    }
-    this.setState(() => fileContent = json.decode(jsonFile.readAsStringSync()));
-    print(fileContent);
-    print(fileContent["0"]);
   }
 
   @override
@@ -196,8 +125,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                         labelText: 'Reference number',
                         helperText: 'e.g. 1234567890',
                         border: const OutlineInputBorder()),
-                    onSaved: (val) =>
-                        setState(() => widget.dispatch.dispatchRecord = val))),
+                    onSaved: (val) => setState(() => _dispatchRecord = val))),
             Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
                 child: TextFormField(
@@ -207,8 +135,8 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                         labelText: 'Quantity',
                         helperText: 'e.g. 5',
                         border: const OutlineInputBorder()),
-                    onSaved: (val) =>
-                        setState(() => _dispatchAmount = int.parse(val)))),
+                    keyboardType: TextInputType.number,
+                    onSaved: (val) => _dispatchAmount = int.parse(val))),
             SizedBox(
               height: 15.0,
             ),
@@ -239,8 +167,13 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                   widget.dispatch.dispatchType = selectedCard;
                   _dispatchType = selectedCard;
                   //valueInputController.text = selectedCard;
-                  writeToFile(recordInputController.text,
-                      amountInputController.text, _dispatchType);
+                  final newDispatch = Dispatch(
+                    recordInputController.text,
+                    DateTime.now(),
+                    int.parse(amountInputController.text),
+                    _dispatchType,
+                  );
+                  addDispatch(newDispatch);
                   if (widget.dispatch.dispatchType == 'truck') {
                     Navigator.push(
                         context,

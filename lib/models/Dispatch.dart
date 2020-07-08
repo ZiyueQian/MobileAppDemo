@@ -1,11 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:hive/hive.dart';
 
+part 'Dispatch.g.dart';
+
+@HiveType()
 class Dispatch {
+  @HiveField(0)
   String dispatchRecord;
-  DateTime dispatchTime;
+  @HiveField(1)
   int dispatchAmount;
+  @HiveField(2)
   String dispatchType;
+  @HiveField(3)
+  DateTime dispatchTime;
 
   Dispatch(this.dispatchRecord, this.dispatchTime, this.dispatchAmount,
       this.dispatchType);
@@ -14,7 +23,7 @@ class Dispatch {
         "truck": Icon(Icons.local_shipping),
         "logistics": Icon(Icons.local_post_office),
         "hand": Icon(Icons.transfer_within_a_station),
-        "container": Icon(Icons.directions_boat),
+        "container": Icon(MdiIcons.package),
         "other": Icon(Icons.group),
       };
 }

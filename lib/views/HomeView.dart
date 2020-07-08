@@ -3,16 +3,15 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
 import 'dashBoardView.dart';
 import '../views/newDispatch/infoView.dart';
-import 'dart:io';
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
 import 'chart.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:hive/hive.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -21,22 +20,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView>
     with AutomaticKeepAliveClientMixin<HomeView> {
-  final List<Dispatch> dispatchList = [
-    Dispatch("2020-05-1111", DateTime.now(), 5, "local_shipping"),
-    Dispatch("2020-05-1112", DateTime.now(), 100, "local_post_office"),
-    Dispatch("2020-05-1113", DateTime.now(), 2, "transfer_within_a_station"),
-    Dispatch("2020-05-1114", DateTime.now(), 20, "flight_takeoff")
-  ];
-
   final dispatchDashboard = [150, 100, 50];
-
-  var showData;
-  Future _loadData;
-  File jsonFile;
-  Directory dir;
-  String fileName = "myFile.json";
-  bool fileExists = false;
-  Map<String, dynamic> fileContent;
 
   @override
   bool get wantKeepAlive => false;
@@ -45,16 +29,9 @@ class _HomeViewState extends State<HomeView>
   void initState() {
     super.initState();
     print("initialized home!");
-    Future loadData =
-        getApplicationDocumentsDirectory().then((Directory directory) {
-      dir = directory;
-      jsonFile = new File(dir.path + "/" + fileName);
-      fileExists = true;
-      fileContent = json.decode(jsonFile.readAsStringSync());
-      if (fileExists) return jsonFile;
-    }); // only create the future once.
-    _loadData = loadData;
   }
+
+  final dispatchBox = Hive.box('dispatch');
 
   @override
   Widget build(BuildContext context) {
@@ -71,30 +48,17 @@ class _HomeViewState extends State<HomeView>
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
-            FutureBuilder(
-              future: _loadData,
-              builder: (context, snapshot) {
-                return fileContent != null
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) =>
-                            buildDispatchCard(context, index),
-                        itemCount: fileContent.length,
-                      )
-                    : Container(
-                        child: Text("Nothing to dispatch!",
-                            style: new TextStyle(fontSize: 20.0)),
-                      );
-              },
-            ),
-//            ListView.builder(
-//              scrollDirection: Axis.vertical,
-//              shrinkWrap: true,
-//              itemBuilder: (BuildContext context, int index) =>
-//                  buildDispatchCard(context, index),
-//              itemCount: 3,
-//            ),
+            WatchBoxBuilder(
+                box: Hive.box('dispatch'),
+                builder: (context, dispatchBox) {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: dispatchBox.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        buildDispatchCard(context, index),
+                  );
+                }),
             SizedBox(height: 8.0),
             Text('Last 15 days',
                 style: TextStyle(
@@ -117,19 +81,18 @@ class _HomeViewState extends State<HomeView>
   }
 
   Widget buildDispatchCard(BuildContext context, int index) {
-    String indexString = index.toString();
-    final dispatch = fileContent[indexString];
+    final dispatch = dispatchBox.getAt(index) as Dispatch;
 
     //matching the dispatch type to the correct icon
     var dispatchIcon = Icon(Icons.group);
-    if (dispatch['dispatchType'] == 'truck') {
+    if (dispatch.dispatchType == 'truck') {
       dispatchIcon = Icon(Icons.local_shipping);
-    } else if (dispatch['dispatchType'] == 'logistics') {
+    } else if (dispatch.dispatchType == 'logistics') {
       dispatchIcon = Icon(Icons.local_post_office);
-    } else if (dispatch['dispatchType'] == 'hand') {
+    } else if (dispatch.dispatchType == 'hand') {
       dispatchIcon = Icon(Icons.transfer_within_a_station);
-    } else if (dispatch['dispatchType'] == 'container') {
-      dispatchIcon = Icon(FlutterIcons.stepforward_ant);
+    } else if (dispatch.dispatchType == 'container') {
+      dispatchIcon = Icon(MdiIcons.package);
     }
 
     return new Container(
@@ -147,7 +110,7 @@ class _HomeViewState extends State<HomeView>
                         width: 60.0,
                       ),
                       Text(
-                        dispatch['dispatchRecord'],
+                        dispatch.dispatchRecord,
                         style: new TextStyle(fontSize: 20.0),
                       ),
                     ],
@@ -161,7 +124,7 @@ class _HomeViewState extends State<HomeView>
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(2.0),
                           ),
-                          child: Text(dispatch['dispatchAmount'])),
+                          child: Text(dispatch.dispatchAmount.toString())),
                       SizedBox(width: 10.0),
                       Icon(Icons.keyboard_arrow_right),
                     ],
