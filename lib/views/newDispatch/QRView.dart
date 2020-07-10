@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 
 class QRView extends StatefulWidget {
   final Dispatch dispatch;
@@ -16,6 +17,12 @@ class QRView extends StatefulWidget {
 
 class _QRViewState extends State<QRView> {
   var qrResult;
+
+  void addDispatch(Dispatch dispatch) {
+    final dispatchBox = Hive.box('dispatch');
+    dispatchBox.add(dispatch);
+    print("adding dispatch! ");
+  }
 
   Future scan() async {
     try {

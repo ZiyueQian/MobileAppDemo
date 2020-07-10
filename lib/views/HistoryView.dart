@@ -7,14 +7,18 @@ import 'package:greenwaydispatch/views/dispatchDetailsView.dart';
 import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'historyDetailsView.dart';
 
-class HistoryView extends StatelessWidget {
-  final List<Dispatch> dispatchList = [
-    Dispatch("2020-05-1111", DateTime.now(), 5, "local_shipping"),
-    Dispatch("2020-05-1112", DateTime.now(), 100, "local_post_office"),
-    Dispatch("2020-05-1113", DateTime.now(), 2, "transfer_within_a_station"),
-    Dispatch("2020-05-1114", DateTime.now(), 20, "flight_takeoff")
-  ];
+class HistoryView extends StatefulWidget {
+  @override
+  _HistoryViewState createState() => _HistoryViewState();
+}
+
+class _HistoryViewState extends State<HistoryView> {
+  final historyBox = Hive.box('history');
 
   @override
   Widget build(BuildContext context) {
@@ -24,28 +28,47 @@ class HistoryView extends StatelessWidget {
           shrinkWrap: true,
           padding: EdgeInsets.all(15.0),
           children: <Widget>[
-            Text('2020-05-19',
+            Text('History of dispatches:',
                 style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
-            Container(
-              child: new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dispatchList.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    buildDispatchCard(context, index),
-              ),
-            ),
+            WatchBoxBuilder(
+                box: Hive.box('history'),
+                builder: (context, dispatchBox) {
+                  if (dispatchBox.isEmpty) {
+                    return Text("Nothing to dispatch!");
+                  } else {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: historyBox.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          buildDispatchCard(context, index),
+                    );
+                  }
+                }),
             SizedBox(height: 8.0),
           ],
         ));
   }
 
   Widget buildDispatchCard(BuildContext context, int index) {
-    final dispatch = dispatchList[index];
+    final dispatch = historyBox.getAt(index) as Dispatch;
+
+    //matching the dispatch type to the correct icon
+    var dispatchIcon = Icon(Icons.group);
+    if (dispatch.dispatchType == 'truck') {
+      dispatchIcon = Icon(Icons.local_shipping);
+    } else if (dispatch.dispatchType == 'logistics') {
+      dispatchIcon = Icon(Icons.local_post_office);
+    } else if (dispatch.dispatchType == 'hand') {
+      dispatchIcon = Icon(Icons.transfer_within_a_station);
+    } else if (dispatch.dispatchType == 'container') {
+      dispatchIcon = Icon(MdiIcons.package);
+    }
+
     return new Container(
       child: InkWell(
         child: Padding(
@@ -56,7 +79,7 @@ class HistoryView extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Icon(Icons.local_shipping),
+                      dispatchIcon,
                       SizedBox(
                         width: 60.0,
                       ),
@@ -88,13 +111,13 @@ class HistoryView extends StatelessWidget {
               )
             ])),
         onTap: () {
-//          Navigator.push(
-//              context,
-//              MaterialPageRoute(
-//                  builder: (context) => DispatchDetailsView(
-//                        dispatch: dispatch,
-//                      ))
-//          );
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HistoryDetailsView(
+                        index: index,
+                        dispatch: dispatch,
+                      )));
         },
       ),
     );

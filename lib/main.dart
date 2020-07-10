@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'home_widget.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+import 'models/Dispatch.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentaryDirectory =
+      await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentaryDirectory.path);
+  Hive.registerAdapter(DispatchAdapter());
+  runApp(MyApp());
+  final dispatchBox = await Hive.openBox('dispatch');
+  final historyBox = await Hive.openBox('history');
+}
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,6 +28,22 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.green,
         ),
-        home: Home());
+        home: FutureBuilder(
+            future: Hive.openBox('dispatch'),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError)
+                  return Text(snapshot.error.toString());
+                else
+                  return Home();
+              } else
+                return Scaffold();
+            }));
+  }
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
   }
 }

@@ -63,7 +63,7 @@ class _HandContactViewState extends State<HandContactView> {
               child: TextFormField(
                 decoration: InputDecoration(
                     icon: Icon(Icons.person),
-                    labelText: 'Contact person',
+                    labelText: 'Recipient person',
                     helperText: 'e.g. Ankit Mathur',
                     border: const OutlineInputBorder()),
                 validator: (value) {
