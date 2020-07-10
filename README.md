@@ -28,8 +28,10 @@ Page 3 & 4: Each appliance has a QR code attached, it needs to be scanned in ord
 ![](demoImages/newDispatch.png)
 
 ## Next steps 
-1. Since this is an ongoing project, I am still working on adapting to Hive for the local json storage. 
+1. Since this is an ongoing project, I am still working on adapting to Hive for the local json storage (transitioned to Hive on July 9th)
 2. The company will roll out alpha testing with some workers to find issues regarding the app. 
 3. After improving the app based on those testing, I will connect the data to the backend by using Firebase. 
 4. I will create a log in page and user authentication system so that dispatch information is attached to specific workers. 
 5. In the future, I will also work on more versions of the app for other roles in the company. For example, workers in manufacturing need to scan each appliance's QR code to enter the information in the inventory. People who are receiving or delivering dispatches also need to log their location and progress. 
+
+Last updated July 9th, 2020
