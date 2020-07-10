@@ -12,6 +12,7 @@ void main() async {
   Hive.registerAdapter(DispatchAdapter());
   runApp(MyApp());
   final dispatchBox = await Hive.openBox('dispatch');
+  final historyBox = await Hive.openBox('history');
 }
 
 class MyApp extends StatefulWidget {

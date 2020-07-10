@@ -51,13 +51,17 @@ class _HomeViewState extends State<HomeView>
             WatchBoxBuilder(
                 box: Hive.box('dispatch'),
                 builder: (context, dispatchBox) {
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: dispatchBox.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        buildDispatchCard(context, index),
-                  );
+                  if (dispatchBox.isEmpty) {
+                    return Text("Nothing to dispatch!");
+                  } else {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: dispatchBox.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          buildDispatchCard(context, index),
+                    );
+                  }
                 }),
             SizedBox(height: 8.0),
             Text('Last 15 days',
@@ -141,7 +145,8 @@ class _HomeViewState extends State<HomeView>
               context,
               MaterialPageRoute(
                   builder: (context) => DispatchDetailsView(
-                        data: dispatch,
+                        index: index,
+                        dispatch: dispatch,
                       )));
         },
       ),

@@ -26,6 +26,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
   String _dispatchRecord;
   int _dispatchAmount;
   String _dispatchType;
+  String _dispatchConfirmation;
 
   void addDispatch(Dispatch dispatch) {
     final dispatchBox = Hive.box('dispatch');
@@ -107,7 +108,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                         onChanged: (_value) => {
                           print(_value.toString()),
                           setState(() {
-                            value = _value;
+                            _dispatchConfirmation = _value;
                           })
                         },
                         hint: Text("$value"),
@@ -172,6 +173,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                     DateTime.now(),
                     int.parse(amountInputController.text),
                     _dispatchType,
+                    _dispatchConfirmation,
                   );
                   addDispatch(newDispatch);
                   if (widget.dispatch.dispatchType == 'truck') {
