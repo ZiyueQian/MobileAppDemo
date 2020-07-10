@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final newDispatch = new Dispatch(null, null, null, null);
+    final newDispatch = new Dispatch(null, null, null, null, null);
     return Scaffold(
       appBar: AppBar(
         title: Text('Dispatch Executive'),

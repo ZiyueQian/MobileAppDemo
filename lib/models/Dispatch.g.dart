@@ -8,7 +8,6 @@ part of 'Dispatch.dart';
 
 class DispatchAdapter extends TypeAdapter<Dispatch> {
   @override
-  final typeId = 0;
   Dispatch read(BinaryReader reader) {
     var numOfFields = reader.readByte();
     var fields = <int, dynamic>{
@@ -19,13 +18,14 @@ class DispatchAdapter extends TypeAdapter<Dispatch> {
       fields[3] as DateTime,
       fields[1] as int,
       fields[2] as String,
+      fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Dispatch obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.dispatchRecord)
       ..writeByte(1)
@@ -33,6 +33,12 @@ class DispatchAdapter extends TypeAdapter<Dispatch> {
       ..writeByte(2)
       ..write(obj.dispatchType)
       ..writeByte(3)
-      ..write(obj.dispatchTime);
+      ..write(obj.dispatchTime)
+      ..writeByte(4)
+      ..write(obj.dispatchConfirmation);
   }
+
+  @override
+  // TODO: implement typeId
+  int get typeId => 0;
 }
