@@ -5,6 +5,7 @@ import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QRView extends StatefulWidget {
   final Dispatch dispatch;
@@ -22,6 +23,23 @@ class _QRViewState extends State<QRView> {
     final dispatchBox = Hive.box('dispatch');
     dispatchBox.add(dispatch);
     print("adding dispatch! ");
+  }
+
+  void saveToHive() async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    String dispatchRecord = shared.getString('dispatchRecord');
+    int dispatchAmount = shared.getInt('dispatchAmount');
+    String dispatchType = shared.getString('dispatchType');
+    String dispatchConfirmation = shared.getString('dispatchConfirmation');
+    print("getting values from shared preference");
+    final newDispatch = Dispatch(
+      dispatchRecord,
+      DateTime.now(),
+      dispatchAmount,
+      dispatchType,
+      dispatchConfirmation,
+    );
+    addDispatch(newDispatch);
   }
 
   Future scan() async {
@@ -56,6 +74,7 @@ class _QRViewState extends State<QRView> {
           RaisedButton(
             child: Text("Finish"),
             onPressed: () {
+              saveToHive();
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
           ),

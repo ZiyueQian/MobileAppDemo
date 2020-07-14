@@ -11,6 +11,7 @@ import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/handCont
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/otherContactView.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DispatchInfoView extends StatefulWidget {
   final Dispatch dispatch;
@@ -28,10 +29,14 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
   String _dispatchType;
   String _dispatchConfirmation;
 
-  void addDispatch(Dispatch dispatch) {
-    final dispatchBox = Hive.box('dispatch');
-    dispatchBox.add(dispatch);
-    print("adding dispatch! ");
+  void setValues(String dispatchRecord, int dispatchAmount, String dispatchType,
+      String dispatchConfirmation) async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('dispatchRecord', dispatchRecord);
+    shared.setInt('dispatchAmount', dispatchAmount);
+    shared.setString('dispatchType', dispatchType);
+    shared.setString('dispatchConfirmation', dispatchConfirmation);
+    print("values set!");
   }
 
   String value = "Select dispatch confirmation";
@@ -168,14 +173,20 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                   widget.dispatch.dispatchType = selectedCard;
                   _dispatchType = selectedCard;
                   //valueInputController.text = selectedCard;
-                  final newDispatch = Dispatch(
+//                  final newDispatch = Dispatch(
+//                    recordInputController.text,
+//                    DateTime.now(),
+//                    int.parse(amountInputController.text),
+//                    _dispatchType,
+//                    _dispatchConfirmation,
+//                  );
+                  //addDispatch(newDispatch);
+                  setValues(
                     recordInputController.text,
-                    DateTime.now(),
                     int.parse(amountInputController.text),
                     _dispatchType,
                     _dispatchConfirmation,
                   );
-                  addDispatch(newDispatch);
                   if (widget.dispatch.dispatchType == 'truck') {
                     Navigator.push(
                         context,
