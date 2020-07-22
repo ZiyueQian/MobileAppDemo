@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import '../models/Dispatch.dart';
-import 'package:hive/hive.dart';
 
 class DispatchDetailsView extends StatelessWidget {
-  var index;
   var dispatch;
 
-  DispatchDetailsView({Key key, @required this.index, @required this.dispatch})
-      : super(key: key);
+  DispatchDetailsView({Key key, @required this.dispatch}) : super(key: key);
 
-  @override
-  final dispatchBox = Hive.box('dispatch');
-  final historyBox = Hive.box('history');
+//  @override
+//  final dispatchBox = Hive.box('dispatch');
+//  final historyBox = Hive.box('history');
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,18 +25,62 @@ class DispatchDetailsView extends StatelessWidget {
                   Text("Amount: ${dispatch.dispatchAmount}"),
                   Text("Type: ${dispatch.dispatchType}"),
                   Text("Date: ${dispatch.dispatchTime}"),
+                  Text("Date: ${dispatch.dispatchConfirmation}"),
+                  moreInfo(dispatch.dispatchType),
                   Center(
                       child: RaisedButton(
                           color: Colors.green,
                           child: Text("Dispatch"),
                           onPressed: () {
-                            historyBox.add(dispatch);
-                            dispatchBox.deleteAt(index);
+//                            historyBox.add(dispatch);
+//                            dispatchBox.deleteAt(index);
                             Navigator.of(context)
                                 .popUntil((route) => route.isFirst);
                           }))
                 ],
               )),
         ));
+  }
+
+  Widget moreInfo(String dispatchType) {
+    print('hello');
+    dispatchType != Null
+        ? Text("Contact person: ${dispatch.dispatchType}")
+        : Intent.doNothing;
+
+//    switch (dispatchType) {
+//      case 'truck':
+//        Text("Truck number: ${dispatch.truckNumber}");
+//        Text("Contact person: ${dispatch.contactPerson}");
+//        Text("Contact number: ${dispatch.contactNumber}");
+//        Text("Alternative contact: ${dispatch.alternativeContactNumber}");
+//        break;
+//
+//      case 'logistics':
+//        Text("Contact person: ${dispatch.contactPerson}");
+//        Text("Contact number: ${dispatch.contactNumber}");
+//        Text("Docket number: ${dispatch.docketNumber}");
+//        break;
+//
+//      case 'container':
+//        Text("Contact person: ${dispatch.contactPerson}");
+//        Text("Contact number: ${dispatch.contactNumber}");
+//        Text("Container number: ${dispatch.containerNumber}");
+//        Text("Customs clearing point: ${dispatch.customsClearingPoint}");
+//        break;
+//
+//      case 'hand':
+//        Text("Contact person: ${dispatch.contactPerson}");
+//        Text("Contact number: ${dispatch.contactNumber}");
+//        Text("Recipient person: ${dispatch.recipientPerson}");
+//        Text("Recipient contact number: ${dispatch.recipientContactNumber}");
+//        break;
+//
+//      case 'other':
+//        Text("Contact person: ${dispatch.contactPerson}");
+//        Text("Contact number: ${dispatch.contactNumber}");
+//        Text("Description: ${dispatch.description}");
+//        break;
+//    }
   }
 }

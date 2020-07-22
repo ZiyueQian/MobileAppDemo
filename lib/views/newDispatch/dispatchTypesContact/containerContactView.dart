@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ContainerContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -14,6 +15,29 @@ class ContainerContactView extends StatefulWidget {
 }
 
 class _ContainerContactViewState extends State<ContainerContactView> {
+  TextEditingController containerInputController = new TextEditingController();
+  TextEditingController customsInputController = new TextEditingController();
+  TextEditingController contactInputController = new TextEditingController();
+  TextEditingController numberInputController = new TextEditingController();
+
+  void setValues(String containerNumber, String customsClearingPoint,
+      String contactPerson, int contactNumber) async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('containerNumber', containerNumber);
+    shared.setString('customsClearingPoint', customsClearingPoint);
+    shared.setString('contactPerson', contactPerson);
+    shared.setInt('contactNumber', contactNumber);
+    print("container values set!");
+  }
+
+  void dispose() {
+    containerInputController.dispose();
+    customsInputController.dispose();
+    contactInputController.dispose();
+    numberInputController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +52,7 @@ class _ContainerContactViewState extends State<ContainerContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: containerInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.directions_boat),
                     labelText: 'Container number',
@@ -44,6 +69,7 @@ class _ContainerContactViewState extends State<ContainerContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: customsInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.location_on),
                     labelText: 'Customs clearing point',
@@ -60,6 +86,7 @@ class _ContainerContactViewState extends State<ContainerContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: contactInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.perm_identity),
                     labelText: 'Contact person',
@@ -76,11 +103,13 @@ class _ContainerContactViewState extends State<ContainerContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: numberInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Contact number',
                     helperText: 'e.g. 1234567890',
                     border: const OutlineInputBorder()),
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter phone number';
@@ -92,6 +121,11 @@ class _ContainerContactViewState extends State<ContainerContactView> {
           RaisedButton(
             child: Text("Next"),
             onPressed: () {
+              setValues(
+                  containerInputController.text,
+                  customsInputController.text,
+                  contactInputController.text,
+                  int.parse(numberInputController.text));
               Navigator.push(
                   context,
                   MaterialPageRoute(

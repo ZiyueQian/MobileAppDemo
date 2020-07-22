@@ -1,29 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:hive/hive.dart';
+import 'package:meta/meta.dart';
 
-part 'Dispatch.g.dart';
-
-@HiveType()
 class Dispatch {
-  @HiveField(0)
+  int id;
+
   String dispatchRecord;
-  @HiveField(1)
   int dispatchAmount;
-  @HiveField(2)
   String dispatchType;
-  @HiveField(3)
   DateTime dispatchTime;
-  @HiveField(4)
   String dispatchConfirmation;
+  String truckNumber;
+  String
+      contactPerson; //also used for driver's name for truck and delivery person for hand
+  int contactNumber;
+  String alternativeContactNumber;
+  String docketNumber;
+  String recipientPerson;
+  String recipientContactNumber;
+  String containerNumber;
+  String customsClearingPoint;
+  String description;
+//  @HiveField(0)
+//  String dispatchRecord;
+//  @HiveField(1)
+//  int dispatchAmount;
+//  @HiveField(2)
+//  String dispatchType;
+//  @HiveField(3)
+//  DateTime dispatchTime;
+//  @HiveField(4)
+//  String dispatchConfirmation;
 //  @HiveField(5)
 //  String truckNumber;
 //  @HiveField(6)
 //  String
 //      contactPerson; //also used for driver's name for truck and delivery person for hand
 //  @HiveField(7)
-//  String contactNumber;
+//  int contactNumber;
 //  @HiveField(8)
 //  String alternativeContactNumber;
 //  @HiveField(9)
@@ -40,22 +55,61 @@ class Dispatch {
 //  String description;
 
   Dispatch(
-    this.dispatchRecord,
+    @required this.dispatchRecord,
+    @required this.dispatchAmount,
+    @required this.dispatchType,
     this.dispatchTime,
-    this.dispatchAmount,
-    this.dispatchType,
     this.dispatchConfirmation,
-//    this.truckNumber,
-//    this.alternativeContactNumber,
-//    this.contactNumber,
-//    this.contactPerson,
-//    this.containerNumber,
-//    this.customsClearingPoint,
-//    this.description,
-//    this.docketNumber,
-//    this.recipientContactNumber,
-//    this.recipientPerson,
+    this.truckNumber,
+    this.contactPerson,
+    this.contactNumber,
+    this.alternativeContactNumber,
+    this.docketNumber,
+    this.recipientPerson,
+    this.recipientContactNumber,
+    this.containerNumber,
+    this.customsClearingPoint,
+    this.description,
   );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'dispatchRecord': dispatchRecord,
+      'dispatchAmount': dispatchAmount,
+      'dispatchType': dispatchType,
+      'dispatchTime': dispatchTime,
+      'dispatchConfirmation': dispatchConfirmation,
+      'truckNumber': truckNumber,
+      'contactPerson': contactPerson,
+      'contactNumber': contactNumber,
+      'alternativeContactNumber': alternativeContactNumber,
+      'docketNumber': docketNumber,
+      'recipientPerson': recipientPerson,
+      'recipientContactNumber': recipientContactNumber,
+      'containerNumber': containerNumber,
+      'customsClearingPoint': customsClearingPoint,
+      'description': description,
+    };
+  }
+
+  static Dispatch fromMap(Map<String, dynamic> map) {
+    return Dispatch(
+        map['dispatchRecord'],
+        map['dispatchAmount'],
+        map['dispatchType'],
+        map['dispatchTime'],
+        map['dispatchConfirmation'],
+        map['truckNumber'],
+        map['contactPerson'],
+        map['contactNumber'],
+        map['alternativeContactNumber'],
+        map['docketNumber'],
+        map['recipientPerson'],
+        map['recipientContactNumber'],
+        map['containerNumber'],
+        map['customsClearingPoint'],
+        map['description']);
+  }
 
   Map<String, Icon> types() => {
         "truck": Icon(Icons.local_shipping),

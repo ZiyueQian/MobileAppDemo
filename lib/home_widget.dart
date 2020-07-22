@@ -5,6 +5,8 @@ import 'views/HomeView.dart';
 import 'views/HistoryView.dart';
 import 'views/newDispatch/infoView.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
+import 'package:greenwaydispatch/dispatch_bloc/dispatch_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,14 +22,21 @@ class _HomeState extends State<Home> {
     HistoryView(),
   ];
 
+  DispatchBloc _dispatchBloc;
+
   @override
   void initState() {
     super.initState();
+//    _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
+//    // Events can be passed into the bloc by calling dispatch.
+//    // We want to start loading dispatches right from the start.
+//    _dispatchBloc.add(LoadDispatches());
   }
 
   @override
   Widget build(BuildContext context) {
-    final newDispatch = new Dispatch(null, null, null, null, null);
+    final newDispatch = new Dispatch(null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null);
     return Scaffold(
       appBar: AppBar(
         title: Text('Dispatch Executive'),

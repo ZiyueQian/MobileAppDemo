@@ -30,11 +30,14 @@ dependencies:
   hive: ^1.0.0
   hive_flutter: ^0.2.1
   fl_chart: ^0.2.0
-  path_provider: ^1.6.10
+  path_provider: ^0.5.0+1
   convert: ^2.1.1
   barcode_scan: ^2.0.1
   material_design_icons_flutter: 4.0.5345
   shared_preferences: ^0.5.8
+  sembast: ^1.15.1
+  flutter_bloc: ^0.9.1
+  equatable: ^0.2.3
 
 dev_dependencies:
   flutter_test:

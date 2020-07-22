@@ -9,8 +9,6 @@ import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/logistic
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/containerContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/handContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/otherContactView.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DispatchInfoView extends StatefulWidget {
@@ -172,15 +170,6 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                   widget.dispatch.dispatchTime = DateTime.now();
                   widget.dispatch.dispatchType = selectedCard;
                   _dispatchType = selectedCard;
-                  //valueInputController.text = selectedCard;
-//                  final newDispatch = Dispatch(
-//                    recordInputController.text,
-//                    DateTime.now(),
-//                    int.parse(amountInputController.text),
-//                    _dispatchType,
-//                    _dispatchConfirmation,
-//                  );
-                  //addDispatch(newDispatch);
                   setValues(
                     recordInputController.text,
                     int.parse(amountInputController.text),

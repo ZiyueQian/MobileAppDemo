@@ -3,15 +3,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
 import 'dashBoardView.dart';
 import '../views/newDispatch/infoView.dart';
 import 'chart.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:hive/hive.dart';
+import 'package:greenwaydispatch/dispatch_bloc/bloc.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -22,16 +21,20 @@ class _HomeViewState extends State<HomeView>
     with AutomaticKeepAliveClientMixin<HomeView> {
   final dispatchDashboard = [150, 100, 50];
 
+  DispatchBloc _dispatchBloc;
+
   @override
   bool get wantKeepAlive => false;
 
   @override
   void initState() {
     super.initState();
+    _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
+    _dispatchBloc.dispatch(LoadDispatches());
     print("initialized home!");
   }
 
-  final dispatchBox = Hive.box('dispatch');
+  // final dispatchBox = Hive.box('dispatch');
 
   @override
   Widget build(BuildContext context) {
@@ -48,21 +51,47 @@ class _HomeViewState extends State<HomeView>
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
-            WatchBoxBuilder(
-                box: Hive.box('dispatch'),
-                builder: (context, dispatchBox) {
-                  if (dispatchBox.isEmpty) {
-                    return Text("Nothing to dispatch!");
-                  } else {
-                    return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: dispatchBox.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          buildDispatchCard(context, index),
+            BlocBuilder(
+                bloc: _dispatchBloc,
+                builder: (BuildContext context, DispatchState state) {
+                  if (state is DispatchesLoading) {
+                    print("dispatches loading");
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
+                  } else if (state is DispatchesLoaded) {
+                    print("building listView");
+                    return ListView.builder(
+                        itemCount: state.dispatches.length,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) =>
+                            Text(state.dispatches[index].dispatchRecord)
+//                        itemBuilder: (BuildContext context, int index) {
+//                          print("printing dispatches");
+//                          final displayedDispatch = state.dispatches[index];
+//                          return ListTile(
+//                            title: Text(displayedDispatch.dispatchRecord),
+//                          );
+//                        }
+                        );
                   }
                 }),
+//            WatchBoxBuilder(
+//                box: Hive.box('dispatch'),
+//                builder: (context, dispatchBox) {
+//                  if (dispatchBox.isEmpty) {
+//                    return Text("Nothing to dispatch!");
+//                  } else {
+//                    return ListView.builder(
+//                      scrollDirection: Axis.vertical,
+//                      shrinkWrap: true,
+//                      itemCount: dispatchBox.length,
+//                      itemBuilder: (BuildContext context, int index) =>
+//                          buildDispatchCard(context, index),
+//                    );
+//                  }
+//                }),
             SizedBox(height: 8.0),
             Text('Last 15 days',
                 style: TextStyle(
@@ -84,9 +113,7 @@ class _HomeViewState extends State<HomeView>
         ));
   }
 
-  Widget buildDispatchCard(BuildContext context, int index) {
-    final dispatch = dispatchBox.getAt(index) as Dispatch;
-
+  Widget buildDispatchCard(Dispatch dispatch) {
     //matching the dispatch type to the correct icon
     var dispatchIcon = Icon(Icons.group);
     if (dispatch.dispatchType == 'truck') {
@@ -144,10 +171,8 @@ class _HomeViewState extends State<HomeView>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => DispatchDetailsView(
-                        index: index,
-                        dispatch: dispatch,
-                      )));
+                  builder: (context) =>
+                      DispatchDetailsView(dispatch: dispatch)));
         },
       ),
     );
