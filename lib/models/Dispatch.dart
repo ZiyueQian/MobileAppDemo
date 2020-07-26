@@ -9,16 +9,16 @@ class Dispatch {
   String dispatchRecord;
   int dispatchAmount;
   String dispatchType;
-  DateTime dispatchTime;
+  String dispatchTime;
   String dispatchConfirmation;
   String truckNumber;
   String
       contactPerson; //also used for driver's name for truck and delivery person for hand
   int contactNumber;
-  String alternativeContactNumber;
+  int alternativeContactNumber;
   String docketNumber;
   String recipientPerson;
-  String recipientContactNumber;
+  int recipientContactNumber;
   String containerNumber;
   String customsClearingPoint;
   String description;

@@ -15,3 +15,10 @@ class DispatchesLoaded extends DispatchState {
   final List<Dispatch> dispatches;
   DispatchesLoaded(this.dispatches) : super([dispatches]);
 }
+
+//class HistoryLoading extends DispatchState {}
+//
+//class HistoryLoaded extends DispatchState {
+//  final List<Dispatch> dispatches;
+//  HistoryLoaded(this.dispatches) : super([dispatches]);
+//}

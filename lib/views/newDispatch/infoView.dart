@@ -24,7 +24,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
   TextEditingController amountInputController = new TextEditingController();
   String _dispatchRecord;
   int _dispatchAmount;
-  String _dispatchType;
+  String _dispatchType = 'other';
   String _dispatchConfirmation;
 
   void setValues(String dispatchRecord, int dispatchAmount, String dispatchType,
@@ -38,7 +38,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
   }
 
   String value = "Select dispatch confirmation";
-  var selectedCard = 'OTHER'; //dispatch types buttons
+  var selectedCard = 'PLACEHOLDER'; //dispatch types buttons
 
   @override
   void initState() {
@@ -165,9 +165,9 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
             Center(
               child: RaisedButton(
                 color: Colors.green,
+                textColor: Colors.white,
                 child: Text("Continue"),
                 onPressed: () {
-                  widget.dispatch.dispatchTime = DateTime.now();
                   widget.dispatch.dispatchType = selectedCard;
                   _dispatchType = selectedCard;
                   setValues(

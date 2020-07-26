@@ -34,8 +34,6 @@ class _HomeViewState extends State<HomeView>
     print("initialized home!");
   }
 
-  // final dispatchBox = Hive.box('dispatch');
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -61,20 +59,18 @@ class _HomeViewState extends State<HomeView>
                     );
                   } else if (state is DispatchesLoaded) {
                     print("building listView");
-                    return ListView.builder(
-                        itemCount: state.dispatches.length,
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) =>
-                            Text(state.dispatches[index].dispatchRecord)
-//                        itemBuilder: (BuildContext context, int index) {
-//                          print("printing dispatches");
-//                          final displayedDispatch = state.dispatches[index];
-//                          return ListTile(
-//                            title: Text(displayedDispatch.dispatchRecord),
-//                          );
-//                        }
-                        );
+                    return SingleChildScrollView(
+                      physics: ScrollPhysics(),
+                      child: ListView.builder(
+                          itemCount: state.dispatches.length,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            print("printing dispatches");
+                            final displayedDispatch = state.dispatches[index];
+                            return buildDispatchCard(displayedDispatch);
+                          }),
+                    );
                   }
                 }),
 //            WatchBoxBuilder(
@@ -124,6 +120,8 @@ class _HomeViewState extends State<HomeView>
       dispatchIcon = Icon(Icons.transfer_within_a_station);
     } else if (dispatch.dispatchType == 'container') {
       dispatchIcon = Icon(MdiIcons.package);
+    } else {
+      dispatchIcon = Icon(Icons.group);
     }
 
     return new Container(
@@ -171,8 +169,10 @@ class _HomeViewState extends State<HomeView>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      DispatchDetailsView(dispatch: dispatch)));
+                  builder: (context) => DispatchDetailsView(
+                        dispatch: dispatch,
+                        dispatchNow: true,
+                      )));
         },
       ),
     );

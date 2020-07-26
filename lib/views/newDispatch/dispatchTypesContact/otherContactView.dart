@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OtherContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -14,6 +15,26 @@ class OtherContactView extends StatefulWidget {
 }
 
 class _OtherContactViewState extends State<OtherContactView> {
+  TextEditingController contactInputController = new TextEditingController();
+  TextEditingController numberInputController = new TextEditingController();
+  TextEditingController descriptionInputController =
+      new TextEditingController();
+
+  void setValues(
+      String contactPerson, int contactNumber, String description) async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('contactPerson', contactPerson);
+    shared.setInt('contactNumber', contactNumber);
+    shared.setString('description', description);
+  }
+
+  void dispose() {
+    contactInputController.dispose();
+    numberInputController.dispose();
+    descriptionInputController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +49,7 @@ class _OtherContactViewState extends State<OtherContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: contactInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Contact name',
@@ -37,6 +59,8 @@ class _OtherContactViewState extends State<OtherContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: numberInputController,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Contact number',
@@ -46,6 +70,7 @@ class _OtherContactViewState extends State<OtherContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: descriptionInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.reorder),
                     labelText: 'Description',
@@ -54,6 +79,10 @@ class _OtherContactViewState extends State<OtherContactView> {
           RaisedButton(
             child: Text("Next"),
             onPressed: () {
+              setValues(
+                  contactInputController.text,
+                  int.parse(numberInputController.text),
+                  descriptionInputController.text);
               Navigator.push(
                   context,
                   MaterialPageRoute(

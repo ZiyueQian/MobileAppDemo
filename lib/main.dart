@@ -31,8 +31,10 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           title: 'Dispatch Executive App',
           theme: ThemeData(
-            primarySwatch: Colors.green,
-          ),
+              primarySwatch: Colors.green,
+              textTheme: Theme.of(context).textTheme.apply(
+                    fontSizeDelta: 2.0,
+                  )),
           home: Home(),
         ));
   }

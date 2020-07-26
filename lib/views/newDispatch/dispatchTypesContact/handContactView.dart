@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HandContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -14,6 +15,28 @@ class HandContactView extends StatefulWidget {
 }
 
 class _HandContactViewState extends State<HandContactView> {
+  TextEditingController deliveryController = new TextEditingController();
+  TextEditingController deliveryNumberController = new TextEditingController();
+  TextEditingController recipientController = new TextEditingController();
+  TextEditingController recipientNumberController = new TextEditingController();
+
+  void setValues(String contactPerson, int contactNumber,
+      String recipientPerson, int recipientContactNumber) async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('contactPerson', contactPerson);
+    shared.setInt('contactNumber', contactNumber);
+    shared.setString('recipientPerson', recipientPerson);
+    shared.setInt('recipientContactNumber', recipientContactNumber);
+  }
+
+  void dispose() {
+    deliveryController.dispose();
+    deliveryNumberController.dispose();
+    recipientController.dispose();
+    recipientNumberController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +51,7 @@ class _HandContactViewState extends State<HandContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 15.0),
               child: TextFormField(
+                controller: deliveryController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.transfer_within_a_station),
                     labelText: 'Delivery person',
@@ -44,6 +68,8 @@ class _HandContactViewState extends State<HandContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
               child: TextFormField(
+                controller: deliveryNumberController,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Contact number',
@@ -61,6 +87,7 @@ class _HandContactViewState extends State<HandContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
               child: TextFormField(
+                controller: recipientController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Recipient person',
@@ -77,6 +104,8 @@ class _HandContactViewState extends State<HandContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 15.0),
               child: TextFormField(
+                controller: recipientNumberController,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Contact number',
@@ -93,6 +122,11 @@ class _HandContactViewState extends State<HandContactView> {
           RaisedButton(
             child: Text("Next"),
             onPressed: () {
+              setValues(
+                  deliveryController.text,
+                  int.parse(deliveryNumberController.text),
+                  recipientController.text,
+                  int.parse(recipientNumberController.text));
               Navigator.push(
                   context,
                   MaterialPageRoute(
