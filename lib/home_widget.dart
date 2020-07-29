@@ -5,7 +5,7 @@ import 'views/HomeView.dart';
 import 'views/HistoryView.dart';
 import 'views/newDispatch/infoView.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
-import 'package:greenwaydispatch/dispatch_bloc/dispatch_bloc.dart';
+import 'package:greenwaydispatch/data/dispatch_bloc/dispatch_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {

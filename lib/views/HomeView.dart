@@ -10,7 +10,7 @@ import 'dashBoardView.dart';
 import '../views/newDispatch/infoView.dart';
 import 'chart.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:greenwaydispatch/dispatch_bloc/bloc.dart';
+import 'package:greenwaydispatch/data/dispatch_bloc/bloc.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -30,7 +30,7 @@ class _HomeViewState extends State<HomeView>
   void initState() {
     super.initState();
     _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
-    _dispatchBloc.dispatch(LoadDispatches());
+    _dispatchBloc.add(LoadDispatches());
     print("initialized home!");
   }
 
@@ -50,7 +50,7 @@ class _HomeViewState extends State<HomeView>
                     color: Colors.green)),
             SizedBox(height: 8.0),
             BlocBuilder(
-                bloc: _dispatchBloc,
+                cubit: _dispatchBloc,
                 builder: (BuildContext context, DispatchState state) {
                   if (state is DispatchesLoading) {
                     print("dispatches loading");
@@ -73,38 +73,23 @@ class _HomeViewState extends State<HomeView>
                     );
                   }
                 }),
-//            WatchBoxBuilder(
-//                box: Hive.box('dispatch'),
-//                builder: (context, dispatchBox) {
-//                  if (dispatchBox.isEmpty) {
-//                    return Text("Nothing to dispatch!");
-//                  } else {
-//                    return ListView.builder(
-//                      scrollDirection: Axis.vertical,
-//                      shrinkWrap: true,
-//                      itemCount: dispatchBox.length,
-//                      itemBuilder: (BuildContext context, int index) =>
-//                          buildDispatchCard(context, index),
-//                    );
-//                  }
-//                }),
             SizedBox(height: 8.0),
-            Text('Last 15 days',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green)),
-            SizedBox(height: 8.0),
-            Container(child: Chart()),
-            Container(
-              child: new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dispatchDashboard.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    buildDashboard(context, index),
-              ),
-            ),
+//            Text('Last 15 days',
+//                style: TextStyle(
+//                    fontSize: 20.0,
+//                    fontWeight: FontWeight.bold,
+//                    color: Colors.green)),
+//            SizedBox(height: 8.0),
+//            Container(child: Chart()),
+//            Container(
+//              child: new ListView.builder(
+//                scrollDirection: Axis.vertical,
+//                shrinkWrap: true,
+//                itemCount: dispatchDashboard.length,
+//                itemBuilder: (BuildContext context, int index) =>
+//                    buildDashboard(context, index),
+//              ),
+//            ),
           ],
         ));
   }

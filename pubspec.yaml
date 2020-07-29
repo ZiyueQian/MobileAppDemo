@@ -36,7 +36,7 @@ dependencies:
   material_design_icons_flutter: 4.0.5345
   shared_preferences: ^0.5.8
   sembast: ^1.15.1
-  flutter_bloc: ^0.9.1
+  flutter_bloc: ^6.0.1
   equatable: ^0.2.3
 
 dev_dependencies:

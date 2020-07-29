@@ -11,7 +11,7 @@ import 'dispatchDetailsView.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'historyDetailsView.dart';
-import 'package:greenwaydispatch/dispatch_bloc/bloc.dart';
+import 'package:greenwaydispatch/data/history_bloc/historyBloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HistoryView extends StatefulWidget {
@@ -20,13 +20,13 @@ class HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<HistoryView> {
-//  DispatchBloc _historyBloc;
+  HistoryBloc _historyBloc;
 
   @override
   void initState() {
     super.initState();
-//    _historyBloc = BlocProvider.of<DispatchBloc>(context);
-//    _historyBloc.dispatch(LoadHistory());
+    _historyBloc = BlocProvider.of<HistoryBloc>(context);
+    _historyBloc.add(LoadHistory());
     print("initialized history!");
   }
 
@@ -38,35 +38,35 @@ class _HistoryViewState extends State<HistoryView> {
           shrinkWrap: true,
           padding: EdgeInsets.all(15.0),
           children: <Widget>[
-            Text('History of dispatches:',
+            Text('History of dispatches',
                 style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
             SizedBox(height: 8.0),
-//            BlocBuilder(
-//                bloc: _historyBloc,
-//                builder: (BuildContext context, DispatchState state) {
-//                  if (state is HistoryLoading) {
-//                    return Center(
-//                      child: CircularProgressIndicator(),
-//                    );
-//                  } else if (state is HistoryLoaded) {
-//                    print("building listView");
-//                    return SingleChildScrollView(
-//                      physics: ScrollPhysics(),
-//                      child: ListView.builder(
-//                          itemCount: state.dispatches.length,
-//                          scrollDirection: Axis.vertical,
-//                          shrinkWrap: true,
-//                          itemBuilder: (BuildContext context, int index) {
-//                            print("printing dispatches");
-//                            final displayedDispatch = state.dispatches[index];
-//                            return buildDispatchCard(displayedDispatch);
-//                          }),
-//                    );
-//                  }
-//                }),
+            BlocBuilder(
+                cubit: _historyBloc,
+                builder: (BuildContext context, HistoryState state) {
+                  if (state is HistoryLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is HistoryLoaded) {
+                    print("building listView");
+                    return SingleChildScrollView(
+                      physics: ScrollPhysics(),
+                      child: ListView.builder(
+                          itemCount: state.dispatches.length,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            print("printing history");
+                            final displayedDispatch = state.dispatches[index];
+                            return buildDispatchCard(displayedDispatch);
+                          }),
+                    );
+                  }
+                }),
             SizedBox(height: 8.0),
           ],
         ));
@@ -129,6 +129,7 @@ class _HistoryViewState extends State<HistoryView> {
               )
             ])),
         onTap: () {
+          print("history -> details view");
           Navigator.push(
               context,
               MaterialPageRoute(

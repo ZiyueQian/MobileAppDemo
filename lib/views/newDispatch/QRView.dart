@@ -6,9 +6,11 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:greenwaydispatch/dispatch_bloc/bloc.dart';
+import 'package:greenwaydispatch/data/dispatch_bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greenwaydispatch/data/dispatch_dao.dart';
+import 'package:greenwaydispatch/data/history_dao.dart';
+import 'package:greenwaydispatch/data/history_bloc/historyBloc.dart';
 import 'package:intl/intl.dart';
 
 class QRView extends StatefulWidget {
@@ -24,22 +26,19 @@ class _QRViewState extends State<QRView> {
   var qrResult;
   DispatchBloc _dispatchBloc;
   DispatchDAO _dispatchDAO = DispatchDAO();
+  HistoryBloc _historyBloc;
+  HistoryDAO _historyDAO = HistoryDAO();
 
   @override
   void initState() {
     super.initState();
     _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
-    _dispatchBloc.dispatch(LoadDispatches());
-    print("initialized home!");
+    _dispatchBloc.add(LoadDispatches());
+    _historyBloc = BlocProvider.of<HistoryBloc>(context);
+    _historyBloc.add(LoadHistory());
   }
 
-//  void addDispatch(Dispatch dispatch) {
-//    final dispatchBox = Hive.box('dispatch');
-//    dispatchBox.add(dispatch);
-//    print("adding dispatch! ");
-//  }
-
-  void saveToDatabase(String whenToDispatch) async {
+  void saveToDatabase(bool dispatchNow) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
 
     //basic dispatch info - exists for all dispatches
@@ -88,12 +87,11 @@ class _QRViewState extends State<QRView> {
       customsClearingPoint,
       description,
     );
-    if (whenToDispatch == "now") {
-      _dispatchBloc.dispatch(AddDispatch(newDispatch));
+    if (dispatchNow == false) {
+      _dispatchBloc.add(AddDispatch(newDispatch));
+    } else {
+      _historyBloc.add(AddHistory(newDispatch));
     }
-//    else {
-//      _dispatchBloc.dispatch(AddHistory(newDispatch));
-//    }
 
     await shared.clear();
     //    print("new dispatch adding");
@@ -143,14 +141,14 @@ class _QRViewState extends State<QRView> {
               RaisedButton(
                 child: Text("Dispatch Later"),
                 onPressed: () {
-                  saveToDatabase("now");
+                  saveToDatabase(false);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
               RaisedButton(
                 child: Text("Dispatch Now"),
                 onPressed: () {
-                  saveToDatabase("later");
+                  saveToDatabase(true);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               )
