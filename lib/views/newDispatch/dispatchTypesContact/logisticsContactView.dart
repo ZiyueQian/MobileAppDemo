@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogisticsContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -14,6 +15,26 @@ class LogisticsContactView extends StatefulWidget {
 }
 
 class _LogisticsContactViewState extends State<LogisticsContactView> {
+  TextEditingController docketInputController = new TextEditingController();
+  TextEditingController contactInputController = new TextEditingController();
+  TextEditingController contactNumberInputController =
+      new TextEditingController();
+
+  void setValues(
+      String docketNumber, String contactPerson, int contactNumber) async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('docketNumber', docketNumber);
+    shared.setString('contactPerson', contactPerson);
+    shared.setInt('contactNumber', contactNumber);
+  }
+
+  void dispose() {
+    docketInputController.dispose();
+    contactInputController.dispose();
+    contactNumberInputController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +49,7 @@ class _LogisticsContactViewState extends State<LogisticsContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: docketInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.local_post_office),
                     labelText: 'Docket number',
@@ -44,6 +66,7 @@ class _LogisticsContactViewState extends State<LogisticsContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: contactInputController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Contact person',
@@ -60,6 +83,8 @@ class _LogisticsContactViewState extends State<LogisticsContactView> {
           Container(
               margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               child: TextFormField(
+                controller: contactNumberInputController,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Contact number',
@@ -76,6 +101,8 @@ class _LogisticsContactViewState extends State<LogisticsContactView> {
           RaisedButton(
             child: Text("Next"),
             onPressed: () {
+              setValues(docketInputController.text, contactInputController.text,
+                  int.parse(contactNumberInputController.text));
               Navigator.push(
                   context,
                   MaterialPageRoute(

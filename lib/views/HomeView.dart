@@ -10,7 +10,7 @@ import 'dashBoardView.dart';
 import '../views/newDispatch/infoView.dart';
 import 'chart.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:greenwaydispatch/dispatch_bloc/bloc.dart';
+import 'package:greenwaydispatch/data/dispatch_bloc/bloc.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -30,11 +30,9 @@ class _HomeViewState extends State<HomeView>
   void initState() {
     super.initState();
     _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
-    _dispatchBloc.dispatch(LoadDispatches());
+    _dispatchBloc.add(LoadDispatches());
     print("initialized home!");
   }
-
-  // final dispatchBox = Hive.box('dispatch');
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +50,7 @@ class _HomeViewState extends State<HomeView>
                     color: Colors.green)),
             SizedBox(height: 8.0),
             BlocBuilder(
-                bloc: _dispatchBloc,
+                cubit: _dispatchBloc,
                 builder: (BuildContext context, DispatchState state) {
                   if (state is DispatchesLoading) {
                     print("dispatches loading");
@@ -61,54 +59,37 @@ class _HomeViewState extends State<HomeView>
                     );
                   } else if (state is DispatchesLoaded) {
                     print("building listView");
-                    return ListView.builder(
-                        itemCount: state.dispatches.length,
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) =>
-                            Text(state.dispatches[index].dispatchRecord)
-//                        itemBuilder: (BuildContext context, int index) {
-//                          print("printing dispatches");
-//                          final displayedDispatch = state.dispatches[index];
-//                          return ListTile(
-//                            title: Text(displayedDispatch.dispatchRecord),
-//                          );
-//                        }
-                        );
+                    return SingleChildScrollView(
+                      physics: ScrollPhysics(),
+                      child: ListView.builder(
+                          itemCount: state.dispatches.length,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            print("printing dispatches");
+                            final displayedDispatch = state.dispatches[index];
+                            return buildDispatchCard(displayedDispatch);
+                          }),
+                    );
                   }
                 }),
-//            WatchBoxBuilder(
-//                box: Hive.box('dispatch'),
-//                builder: (context, dispatchBox) {
-//                  if (dispatchBox.isEmpty) {
-//                    return Text("Nothing to dispatch!");
-//                  } else {
-//                    return ListView.builder(
-//                      scrollDirection: Axis.vertical,
-//                      shrinkWrap: true,
-//                      itemCount: dispatchBox.length,
-//                      itemBuilder: (BuildContext context, int index) =>
-//                          buildDispatchCard(context, index),
-//                    );
-//                  }
-//                }),
             SizedBox(height: 8.0),
-            Text('Last 15 days',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green)),
-            SizedBox(height: 8.0),
-            Container(child: Chart()),
-            Container(
-              child: new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dispatchDashboard.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    buildDashboard(context, index),
-              ),
-            ),
+//            Text('Last 15 days',
+//                style: TextStyle(
+//                    fontSize: 20.0,
+//                    fontWeight: FontWeight.bold,
+//                    color: Colors.green)),
+//            SizedBox(height: 8.0),
+//            Container(child: Chart()),
+//            Container(
+//              child: new ListView.builder(
+//                scrollDirection: Axis.vertical,
+//                shrinkWrap: true,
+//                itemCount: dispatchDashboard.length,
+//                itemBuilder: (BuildContext context, int index) =>
+//                    buildDashboard(context, index),
+//              ),
+//            ),
           ],
         ));
   }
@@ -124,6 +105,8 @@ class _HomeViewState extends State<HomeView>
       dispatchIcon = Icon(Icons.transfer_within_a_station);
     } else if (dispatch.dispatchType == 'container') {
       dispatchIcon = Icon(MdiIcons.package);
+    } else {
+      dispatchIcon = Icon(Icons.group);
     }
 
     return new Container(
@@ -171,8 +154,10 @@ class _HomeViewState extends State<HomeView>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      DispatchDetailsView(dispatch: dispatch)));
+                  builder: (context) => DispatchDetailsView(
+                        dispatch: dispatch,
+                        dispatchNow: true,
+                      )));
         },
       ),
     );

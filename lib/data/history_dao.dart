@@ -3,45 +3,45 @@ import 'package:sembast/sembast.dart';
 import 'app_database.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 
-class DispatchDAO {
-  static const String dispatchNow = 'dispatches';
+class HistoryDAO {
+  static const String dispatchHistory = 'dispatchesHistory';
 
   //store with int keys and Map<String,dynamic> values
-  final _dispatchStore = intMapStoreFactory.store(dispatchNow);
+  final _historyStore = intMapStoreFactory.store(dispatchHistory);
 
   //private getter to get a singleton instance of an opened database
   Future<Database> get _db async => await AppDatabase.instance.database;
 
-  Future insert(Dispatch dispatch) async {
-    await _dispatchStore.add(await _db, dispatch.toMap());
+  Future insertHistory(Dispatch dispatch) async {
+    await _historyStore.add(await _db, dispatch.toMap());
   }
 
-  Future update(Dispatch dispatch) async {
+  Future updateHistory(Dispatch dispatch) async {
     // For filtering by key (ID), RegEx, greater than, and many other criteria,
     // we use a Finder.
     final finder = Finder(filter: Filter.byKey(dispatch.id));
-    await _dispatchStore.update(
+    await _historyStore.update(
       await _db,
       dispatch.toMap(),
       finder: finder,
     );
   }
 
-  Future delete(Dispatch dispatch) async {
+  Future deleteHistory(Dispatch dispatch) async {
     final finder = Finder(filter: Filter.byKey(dispatch.id));
-    await _dispatchStore.delete(
+    await _historyStore.delete(
       await _db,
       finder: finder,
     );
   }
 
-  Future<List<Dispatch>> getDispatchesSortedByTime() async {
+  Future<List<Dispatch>> getHistorySortedByTime() async {
     // Finder object can also sort data.
     final finder = Finder(sortOrders: [
       SortOrder('dispatchTime'),
     ]);
 
-    final recordSnapshots = await _dispatchStore.find(
+    final recordSnapshots = await _historyStore.find(
       await _db,
       finder: finder,
     );

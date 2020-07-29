@@ -7,6 +7,8 @@ import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'bloc.dart';
 
 class DispatchBloc extends Bloc<DispatchEvent, DispatchState> {
+  DispatchBloc() : super(DispatchesLoading());
+
   DispatchDAO _dispatchDAO = DispatchDAO();
 
   // Display a loading indicator right from the start of the app
@@ -18,6 +20,7 @@ class DispatchBloc extends Bloc<DispatchEvent, DispatchState> {
     DispatchEvent event,
   ) async* {
     if (event is LoadDispatches) {
+      //home page
       // Indicating that dispatches are being loaded - display progress indicator.
       yield DispatchesLoading();
       yield* _reloadDispatches();
@@ -31,7 +34,7 @@ class DispatchBloc extends Bloc<DispatchEvent, DispatchState> {
   }
 
   Stream<DispatchState> _reloadDispatches() async* {
-    final dispatches = await _dispatchDAO.getAllSortedByRecord();
+    final dispatches = await _dispatchDAO.getDispatchesSortedByTime();
     // Yielding a state bundled with the Dispatches from the database.
     yield DispatchesLoaded(dispatches);
   }

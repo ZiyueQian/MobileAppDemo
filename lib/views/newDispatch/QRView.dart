@@ -6,9 +6,12 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:greenwaydispatch/dispatch_bloc/bloc.dart';
+import 'package:greenwaydispatch/data/dispatch_bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greenwaydispatch/data/dispatch_dao.dart';
+import 'package:greenwaydispatch/data/history_dao.dart';
+import 'package:greenwaydispatch/data/history_bloc/historyBloc.dart';
+import 'package:intl/intl.dart';
 
 class QRView extends StatefulWidget {
   final Dispatch dispatch;
@@ -23,22 +26,19 @@ class _QRViewState extends State<QRView> {
   var qrResult;
   DispatchBloc _dispatchBloc;
   DispatchDAO _dispatchDAO = DispatchDAO();
+  HistoryBloc _historyBloc;
+  HistoryDAO _historyDAO = HistoryDAO();
 
   @override
   void initState() {
     super.initState();
     _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
-    _dispatchBloc.dispatch(LoadDispatches());
-    print("initialized home!");
+    _dispatchBloc.add(LoadDispatches());
+    _historyBloc = BlocProvider.of<HistoryBloc>(context);
+    _historyBloc.add(LoadHistory());
   }
 
-//  void addDispatch(Dispatch dispatch) {
-//    final dispatchBox = Hive.box('dispatch');
-//    dispatchBox.add(dispatch);
-//    print("adding dispatch! ");
-//  }
-
-  void saveToDatabase() async {
+  void saveToDatabase(bool dispatchNow) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
 
     //basic dispatch info - exists for all dispatches
@@ -48,11 +48,12 @@ class _QRViewState extends State<QRView> {
     String dispatchConfirmation = shared.getString('dispatchConfirmation');
     String contactPerson = shared.getString('contactPerson');
     int contactNumber = shared.getInt('contactNumber');
+    DateTime now = DateTime.now();
+    String dispatchTime = DateFormat('yyyy-MM-dd – kk:mm').format(now);
 
     //truck dispatch type
-    var truckNumber = shared.getString('truckNumber');
-    String alternativeContactNumber =
-        shared.getString('alternativeContactNumber');
+    String truckNumber = shared.getString('truckNumber');
+    int alternativeContactNumber = shared.getInt('alternativeContactNumber');
 
     //container dispatch type
     String containerNumber = shared.getString('containerNumber');
@@ -62,7 +63,7 @@ class _QRViewState extends State<QRView> {
     String docketNumber = shared.getString('docketNumber');
 
     //hand dispatch type
-    String recipientContactNumber = shared.getString('recipientContactNumber');
+    int recipientContactNumber = shared.getInt('recipientContactNumber');
     String recipientPerson = shared.getString('recipientPerson');
 
     //other dispatch type
@@ -73,7 +74,7 @@ class _QRViewState extends State<QRView> {
       dispatchRecord,
       dispatchAmount,
       dispatchType,
-      DateTime.now(),
+      dispatchTime,
       dispatchConfirmation,
       truckNumber,
       contactPerson,
@@ -86,12 +87,24 @@ class _QRViewState extends State<QRView> {
       customsClearingPoint,
       description,
     );
-    _dispatchBloc.dispatch(AddDispatch(newDispatch));
-    //_dispatchDAO.insert(newDispatch);
-    print("new dispatch adding");
-    print(newDispatch.containerNumber); //shared preference works fine!
-    print(newDispatch);
+    if (dispatchNow == false) {
+      _dispatchBloc.add(AddDispatch(newDispatch));
+    } else {
+      _historyBloc.add(AddHistory(newDispatch));
+    }
+
     await shared.clear();
+    //    print("new dispatch adding");
+//    print(newDispatch.containerNumber);
+//    print(newDispatch.contactPerson);
+//    print(newDispatch.contactNumber);
+//    print(newDispatch.truckNumber);
+//    print(newDispatch.alternativeContactNumber);
+//    print(newDispatch.docketNumber);
+//    print(newDispatch.recipientPerson);
+//    print(newDispatch.recipientContactNumber);
+//    print(newDispatch.customsClearingPoint);
+//    print(newDispatch.description);
   }
 
   Future scan() async {
@@ -123,12 +136,23 @@ class _QRViewState extends State<QRView> {
             child: Text("Scan QR Code"),
             onPressed: scan,
           ),
-          RaisedButton(
-            child: Text("Finish"),
-            onPressed: () {
-              saveToDatabase();
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            },
+          Row(
+            children: <Widget>[
+              RaisedButton(
+                child: Text("Dispatch Later"),
+                onPressed: () {
+                  saveToDatabase(false);
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+              ),
+              RaisedButton(
+                child: Text("Dispatch Now"),
+                onPressed: () {
+                  saveToDatabase(true);
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+              )
+            ],
           ),
         ],
       ),
