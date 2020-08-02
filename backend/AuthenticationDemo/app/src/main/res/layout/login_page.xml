@@ -7,8 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="Enter email"
-        android:id="@+id/email"></EditText>
+        android:hint="Enter Phone Number"
+        android:id="@+id/phone_number"></EditText>
 
     <EditText
         android:layout_width="match_parent"
