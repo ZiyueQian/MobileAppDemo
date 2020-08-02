@@ -1,4 +1,5 @@
-{"dispatches": {
+{"dispatches": [
+  {
   "dispatchRecord": "12345",
 "dispatchAmount": 5,
 "dispatchType": "truck",
@@ -14,4 +15,5 @@
 "containerNumber": "ABCDEF", 
 "customsClearingPoint": "Delhi",
 "description": "describing dispatch"
-}}
+}]
+}
