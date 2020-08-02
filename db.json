@@ -1,17 +1,17 @@
- {
+{"dispatches": {
   "dispatchRecord": "12345",
-  "dispatchAmount": 5,
-  "dispatchType": "truck",
-  "dispatchTime": "2020-02-02 21:40",
-  "dispatchConfirmation": "confirm",
-  "truckNumber": "A11", 
-  "contactPerson": "Ankit",
-  "contactNumber": 123456, 
-  "alternativeContactNumber": 1234567, 
-  "docketNumber": "ABC123",
-  "recipientPerson": "Mohit",
-  "recipientContactNumber": 12345678, 
-  "containerNumber": "ABCDEF", 
-  "customsClearingPoint": "Delhi",
-  "description": "describing dispatch"
-}
+"dispatchAmount": 5,
+"dispatchType": "truck",
+"dispatchTime": "2020-02-02 21:40",
+"dispatchConfirmation": "confirm",
+"truckNumber": "A11", 
+"contactPerson": "Ankit",
+"contactNumber": 123456, 
+"alternativeContactNumber": 1234567, 
+"docketNumber": "ABC123",
+"recipientPerson": "Mohit",
+"recipientContactNumber": 12345678, 
+"containerNumber": "ABCDEF", 
+"customsClearingPoint": "Delhi",
+"description": "describing dispatch"
+}}
