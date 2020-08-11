@@ -8,7 +8,7 @@ import 'models/Dispatch.dart';
 import 'package:greenwaydispatch/data/history_bloc/history_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'dispatchesService.dart';
-import 'package:greenwaydispatch/login/LoginPage.dart';
+import 'package:greenwaydispatch/login/interface/LoginPage.dart';
 
 void setupLocator() {
   GetIt.I.registerLazySingleton(() => DispatchesService());
