@@ -6,9 +6,17 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'models/Dispatch.dart';
 import 'package:greenwaydispatch/data/history_bloc/history_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'dispatchesService.dart';
+import 'package:greenwaydispatch/login/LoginPage.dart';
+
+void setupLocator() {
+  GetIt.I.registerLazySingleton(() => DispatchesService());
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
   runApp(MyApp());
 }
 
@@ -36,7 +44,8 @@ class _MyAppState extends State<MyApp> {
               textTheme: Theme.of(context).textTheme.apply(
                     fontSizeDelta: 2.0,
                   )),
-          home: Home(),
+//          home: Home(),
+          home: LoginPage(),
         ));
   }
 }

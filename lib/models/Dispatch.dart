@@ -2,15 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:meta/meta.dart';
+import 'dart:convert';
+
+Dispatch dispatchFromJson(String str) => Dispatch.fromJson(json.decode(str));
+String dispatchToJson(Dispatch data) => json.encode(data.toMap());
 
 class Dispatch {
   int id;
 
+  //all will have
   String dispatchRecord;
   int dispatchAmount;
   String dispatchType;
   String dispatchTime;
   String dispatchConfirmation;
+
+  //based on their dispatch type, some fields will be filled and others will be null
   String truckNumber;
   String
       contactPerson; //also used for driver's name for truck and delivery person for hand
@@ -22,37 +29,8 @@ class Dispatch {
   String containerNumber;
   String customsClearingPoint;
   String description;
-//  @HiveField(0)
-//  String dispatchRecord;
-//  @HiveField(1)
-//  int dispatchAmount;
-//  @HiveField(2)
-//  String dispatchType;
-//  @HiveField(3)
-//  DateTime dispatchTime;
-//  @HiveField(4)
-//  String dispatchConfirmation;
-//  @HiveField(5)
-//  String truckNumber;
-//  @HiveField(6)
-//  String
-//      contactPerson; //also used for driver's name for truck and delivery person for hand
-//  @HiveField(7)
-//  int contactNumber;
-//  @HiveField(8)
-//  String alternativeContactNumber;
-//  @HiveField(9)
-//  String docketNumber;
-//  @HiveField(10)
-//  String recipientPerson;
-//  @HiveField(11)
-//  String recipientContactNumber;
-//  @HiveField(12)
-//  String containerNumber;
-//  @HiveField(13)
-//  String customsClearingPoint;
-//  @HiveField(14)
-//  String description;
+  //invoice number and OC number that the dispatch executive will already have, will have either
+  //change drop down to invoice number, order confirmation number, packing list
 
   Dispatch(
     @required this.dispatchRecord,
@@ -110,6 +88,44 @@ class Dispatch {
         map['customsClearingPoint'],
         map['description']);
   }
+
+  factory Dispatch.fromJson(Map<String, dynamic> json) {
+    return Dispatch(
+      json["dispatchRecord"] as String,
+      json["dispatchAmount"] as int,
+      json["dispatchType"] as String,
+      json["dispatchTime"] as String,
+      json["dispatchConfirmation"] as String,
+      json["truckNumber"] as String,
+      json["contactPerson"] as String,
+      json["contactNumber"] as int,
+      json["alternativeContactNumber"] as int,
+      json["docketNumber"] as String,
+      json["recipientPerson"] as String,
+      json["recipientContactNumber"] as int,
+      json["containerNumber"] as String,
+      json["customsClearingPoint"] as String,
+      json["description"] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'dispatchRecord': dispatchRecord,
+        'dispatchAmount': dispatchAmount,
+        'dispatchType': dispatchType,
+        'dispatchTime': dispatchTime,
+        'dispatchConfirmation': dispatchConfirmation,
+        'truckNumber': truckNumber,
+        'contactPerson': contactPerson,
+        'contactNumber': contactNumber,
+        'alternativeContactNumber': alternativeContactNumber,
+        'docketNumber': docketNumber,
+        'recipientPerson': recipientPerson,
+        'recipientContactNumber': recipientContactNumber,
+        'containerNumber': containerNumber,
+        'customsClearingPoint': customsClearingPoint,
+        'description': description,
+      };
 
   Map<String, Icon> types() => {
         "truck": Icon(Icons.local_shipping),

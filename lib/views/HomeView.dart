@@ -28,9 +28,15 @@ class _HomeViewState extends State<HomeView>
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () async {
+      _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
+      _dispatchBloc.fetchDispatches();
+      //_dispatchBloc.postDispatches();
+      _dispatchBloc.add(LoadDispatches());
+    });
+
     super.initState();
-    _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
-    _dispatchBloc.add(LoadDispatches());
+
     print("initialized home!");
   }
 
@@ -43,7 +49,7 @@ class _HomeViewState extends State<HomeView>
           shrinkWrap: true,
           padding: EdgeInsets.all(15.0),
           children: <Widget>[
-            Text('Dispatch now',
+            Text('To be dispatched',
                 style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -53,12 +59,10 @@ class _HomeViewState extends State<HomeView>
                 cubit: _dispatchBloc,
                 builder: (BuildContext context, DispatchState state) {
                   if (state is DispatchesLoading) {
-                    print("dispatches loading");
                     return Center(
                       child: CircularProgressIndicator(),
                     );
                   } else if (state is DispatchesLoaded) {
-                    print("building listView");
                     return SingleChildScrollView(
                       physics: ScrollPhysics(),
                       child: ListView.builder(
@@ -66,7 +70,6 @@ class _HomeViewState extends State<HomeView>
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
-                            print("printing dispatches");
                             final displayedDispatch = state.dispatches[index];
                             return buildDispatchCard(displayedDispatch);
                           }),

@@ -112,6 +112,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                           print(_value.toString()),
                           setState(() {
                             _dispatchConfirmation = _value;
+                            value = _value;
                           })
                         },
                         hint: Text("$value"),

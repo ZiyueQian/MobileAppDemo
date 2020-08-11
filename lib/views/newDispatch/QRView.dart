@@ -1,5 +1,7 @@
 //THIS PAGE IS FOR QR CODE SCANNING - LAST STEP FOR ADDING A NEW DISPATCH
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -12,6 +14,10 @@ import 'package:greenwaydispatch/data/dispatch_dao.dart';
 import 'package:greenwaydispatch/data/history_dao.dart';
 import 'package:greenwaydispatch/data/history_bloc/historyBloc.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'package:greenwaydispatch/models/Dispatch_insert.dart';
+import 'package:greenwaydispatch/data/api_response.dart';
 
 class QRView extends StatefulWidget {
   final Dispatch dispatch;
@@ -28,6 +34,31 @@ class _QRViewState extends State<QRView> {
   DispatchDAO _dispatchDAO = DispatchDAO();
   HistoryBloc _historyBloc;
   HistoryDAO _historyDAO = HistoryDAO();
+  Future<Dispatch> _futureDispatch;
+
+  String dispatchRecord;
+  int dispatchAmount;
+  String dispatchType;
+  String dispatchTime;
+  String dispatchConfirmation;
+  String truckNumber;
+  String
+      contactPerson; //also used for driver's name for truck and delivery person for hand
+  int contactNumber;
+  int alternativeContactNumber;
+  String docketNumber;
+  String recipientPerson;
+  int recipientContactNumber;
+  String containerNumber;
+  String customsClearingPoint;
+  String description;
+
+  var apiURL =
+      "https://my-json-server.typicode.com/ZiyueQian/MobileAppDemo/dispatches";
+  static const headers = {
+    'apiKey': '08d771e2-7c49-1789-0eaa-32aff09f1471',
+    'Content-Type': 'application/json'
+  };
 
   @override
   void initState() {
@@ -38,36 +69,36 @@ class _QRViewState extends State<QRView> {
     _historyBloc.add(LoadHistory());
   }
 
-  void saveToDatabase(bool dispatchNow) async {
+  Future saveToDatabase(bool dispatchNow) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
 
     //basic dispatch info - exists for all dispatches
-    String dispatchRecord = shared.getString('dispatchRecord');
-    int dispatchAmount = shared.getInt('dispatchAmount');
-    String dispatchType = shared.getString('dispatchType');
-    String dispatchConfirmation = shared.getString('dispatchConfirmation');
-    String contactPerson = shared.getString('contactPerson');
-    int contactNumber = shared.getInt('contactNumber');
+    dispatchRecord = shared.getString('dispatchRecord');
+    dispatchAmount = shared.getInt('dispatchAmount');
+    dispatchType = shared.getString('dispatchType');
+    dispatchConfirmation = shared.getString('dispatchConfirmation');
+    contactPerson = shared.getString('contactPerson');
+    contactNumber = shared.getInt('contactNumber');
     DateTime now = DateTime.now();
-    String dispatchTime = DateFormat('yyyy-MM-dd – kk:mm').format(now);
+    dispatchTime = DateFormat('yyyy-MM-dd kk:mm').format(now);
 
     //truck dispatch type
-    String truckNumber = shared.getString('truckNumber');
+    truckNumber = shared.getString('truckNumber');
     int alternativeContactNumber = shared.getInt('alternativeContactNumber');
 
     //container dispatch type
-    String containerNumber = shared.getString('containerNumber');
-    String customsClearingPoint = shared.getString('customsClearingPoint');
+    containerNumber = shared.getString('containerNumber');
+    customsClearingPoint = shared.getString('customsClearingPoint');
 
     //logistics dispatch type
-    String docketNumber = shared.getString('docketNumber');
+    docketNumber = shared.getString('docketNumber');
 
     //hand dispatch type
-    int recipientContactNumber = shared.getInt('recipientContactNumber');
-    String recipientPerson = shared.getString('recipientPerson');
+    recipientContactNumber = shared.getInt('recipientContactNumber');
+    recipientPerson = shared.getString('recipientPerson');
 
     //other dispatch type
-    String description = shared.getString('description');
+    description = shared.getString('description');
 
     print("getting values from shared preference");
     final newDispatch = Dispatch(
@@ -94,17 +125,56 @@ class _QRViewState extends State<QRView> {
     }
 
     await shared.clear();
-    //    print("new dispatch adding");
-//    print(newDispatch.containerNumber);
-//    print(newDispatch.contactPerson);
-//    print(newDispatch.contactNumber);
-//    print(newDispatch.truckNumber);
-//    print(newDispatch.alternativeContactNumber);
-//    print(newDispatch.docketNumber);
-//    print(newDispatch.recipientPerson);
-//    print(newDispatch.recipientContactNumber);
-//    print(newDispatch.customsClearingPoint);
-//    print(newDispatch.description);
+  }
+
+  Future<Dispatch> savetoServer() async {
+    final newDispatch = DispatchInsert(
+        dispatchRecord: dispatchRecord,
+        dispatchAmount: dispatchAmount,
+        dispatchType: dispatchType,
+        dispatchTime: dispatchTime,
+        dispatchConfirmation: dispatchConfirmation,
+        truckNumber: truckNumber,
+        contactPerson: contactPerson,
+        contactNumber: contactNumber,
+        alternativeContactNumber: alternativeContactNumber,
+        docketNumber: docketNumber,
+        recipientPerson: recipientPerson,
+        recipientContactNumber: recipientContactNumber,
+        containerNumber: containerNumber,
+        customsClearingPoint: customsClearingPoint,
+        description: description);
+    final result = await createDispatch(newDispatch);
+  }
+
+  Future<APIResponse<bool>> createDispatch(DispatchInsert item) {
+    var dispatch = {
+      "dispatchRecord": "testing",
+      "dispatchAmount": 5,
+      "dispatchType": "truck",
+      "dispatchTime": "2020-02-02 21:40",
+      "dispatchConfirmation": "confirm",
+      "truckNumber": "A11",
+      "contactPerson": "Ankit",
+      "contactNumber": 123456,
+      "alternativeContactNumber": 1234567,
+      "docketNumber": "ABC123",
+      "recipientPerson": "Mohit",
+      "recipientContactNumber": 12345678,
+      "containerNumber": "ABCDEF",
+      "customsClearingPoint": "Delhi",
+      "description": "describing dispatch"
+    };
+
+    return http
+        .post(apiURL, headers: headers, body: convert.jsonEncode(item.toJson()))
+        .then((data) {
+      if (data.statusCode == 201) {
+        return APIResponse<bool>(data: true);
+      }
+      return APIResponse<bool>(error: true, errorMessage: 'An error occured');
+    }).catchError((_) =>
+            APIResponse<bool>(error: true, errorMessage: 'An error occured'));
   }
 
   Future scan() async {
@@ -139,7 +209,7 @@ class _QRViewState extends State<QRView> {
           Row(
             children: <Widget>[
               RaisedButton(
-                child: Text("Dispatch Later"),
+                child: Text("To be dispatched"),
                 onPressed: () {
                   saveToDatabase(false);
                   Navigator.of(context).popUntil((route) => route.isFirst);
@@ -149,6 +219,9 @@ class _QRViewState extends State<QRView> {
                 child: Text("Dispatch Now"),
                 onPressed: () {
                   saveToDatabase(true);
+                  setState(() {
+                    _futureDispatch = savetoServer();
+                  });
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               )

@@ -2,6 +2,7 @@
 import 'package:sembast/sembast.dart';
 import 'app_database.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
+import 'package:http/http.dart' as http;
 
 class DispatchDAO {
   static const String dispatchNow = 'dispatches';
