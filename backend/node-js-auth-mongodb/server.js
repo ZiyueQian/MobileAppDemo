@@ -81,10 +81,7 @@ app.post('/signup', (req,res) => {
 			});
 
 		});
-	}
-	
-
-	
+	}	
   
 });
 
@@ -131,6 +128,58 @@ app.post('/login', (req,res) => {
 	
 });
 
+app.post('/resetPassword', (req,res) => {
+	const resetInfo= {
+		phone_number: req.body.phone_number,
+		newPassword: req.body.password,
+		newConfirmPassword: req.body.confirmPassword
+	};
+
+	const phoneNumber = {phone_number: resetInfo.phone_number};
+	const newPassword = {password: resetInfo.newPassword};
+
+	user_collection.findOne(phoneNumber).then(user =>{
+		//check if user exists already
+		if (!user){
+			return res.status(404).json('user does not exist.');
+		}
+
+		//check if password match
+		else if (req.body.password !== req.body.confirmPassword){
+			res.status(401).json('password does not match');
+		}
+
+		//reset password
+		else{
+			//hash password with bcryptjs
+			bcrypt.hash(req.body.password, 10, function(err, hash){
+		    	if (err) {
+		      		throw err;
+		    	}
+		    	else{
+		    		var newPwrd = {$set: {password: hash} };
+		    		user_collection.updateOne(user, newPwrd, function(err, result){
+		    			if(err) {
+		      				throw err;
+		    			}
+		    			else{
+		    				res.json("updated");
+		    				
+		    			}
+		    			
+		    		})
+		    	}
+		    	
+
+			});
+
+		}
+
+	})
+
+
+});
+
 function generateAccessToken(number){
 	return jwt.sign(number,process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s'});
 }
@@ -173,5 +222,5 @@ app.get('/',(req,res) => {
 });
 
 app.listen(3000, () =>{
-	console.log('listening');
+	console.log('Listening');
 });
