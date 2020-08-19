@@ -212,6 +212,9 @@ class _QRViewState extends State<QRView> {
                 child: Text("To be dispatched"),
                 onPressed: () {
                   saveToDatabase(false);
+                  setState(() {
+                    _futureDispatch = savetoServer();
+                  });
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
