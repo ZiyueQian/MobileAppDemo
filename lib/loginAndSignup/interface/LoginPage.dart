@@ -16,36 +16,39 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(
           title: Text("Login"),
         ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-              child: LoginForm(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Don't have an account?",
-                ),
-                SizedBox(width: 5.0),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignupForm()));
-                  },
-                  child: Text(
-                    'Sign up',
-                    style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline),
+        body: SafeArea(
+          minimum: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: LoginForm(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Don't have an account?",
                   ),
-                )
-              ],
-            )
-          ],
+                  SizedBox(width: 5.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignupForm()));
+                    },
+                    child: Text(
+                      'Sign up',
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

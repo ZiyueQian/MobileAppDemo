@@ -8,12 +8,12 @@ abstract class LoginApiService extends ChopperService {
   @Post(path: "/login")
   Future<Response> getResult(@Body() Map<String, dynamic> body);
 
-  @Post(path: "/register")
-  Future<Response> registerUser(@Body() Map<String, dynamic> body);
+  @Post(path: "/signup")
+  Future<Response> signupUser(@Body() Map<String, String> body);
 
   static LoginApiService create() {
     final client = ChopperClient(
-        baseUrl: "https://reqres.in/api",
+        baseUrl: "http://10.0.2.2:3000",
         services: [_$LoginApiService()],
         converter: JsonConverter(),
         errorConverter: JsonConverter());

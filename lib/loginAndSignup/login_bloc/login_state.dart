@@ -1,6 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:meta/meta.dart';
-import 'package:greenwaydispatch/login/login_model/LogIn.dart';
+import 'package:greenwaydispatch/loginAndSignUp/login_model/LogIn.dart';
 
 @immutable
 abstract class LoginState {}

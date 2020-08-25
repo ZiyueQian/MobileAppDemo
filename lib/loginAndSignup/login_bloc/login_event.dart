@@ -4,8 +4,8 @@ import 'package:meta/meta.dart';
 abstract class LoginEvent {}
 
 class Fetch extends LoginEvent {
-  final String phoneNumber;
+  final String phone_number;
   final String password;
 
-  Fetch({@required this.phoneNumber, @required this.password});
+  Fetch({@required this.phone_number, @required this.password});
 }

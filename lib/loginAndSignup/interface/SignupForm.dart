@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greenwaydispatch/home_widget.dart';
-import 'package:greenwaydispatch/login/SignupAuthentication.dart';
+import 'package:greenwaydispatch/loginAndSignUp/SignupAuthentication.dart';
+import '../signup_bloc/bloc.dart';
 
 class SignupForm extends StatefulWidget {
   const SignupForm({Key key}) : super(key: key);
@@ -19,10 +20,22 @@ class _SignupFormState extends State<SignupForm> {
   final _confirmPasswordController = TextEditingController();
   bool showPassword = false;
   bool showConfirmPassword = false;
+  SignupBloc signupBloc;
 
   @override
   void initState() {
     super.initState();
+    signupBloc = SignupBloc();
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _phoneNumberController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -94,7 +107,6 @@ class _SignupFormState extends State<SignupForm> {
                     return null;
                   },
                   controller: _phoneNumberController,
-                  keyboardType: TextInputType.number,
                 ),
                 SizedBox(
                   height: 16.0,
@@ -160,6 +172,23 @@ class _SignupFormState extends State<SignupForm> {
                 SizedBox(
                   height: 40,
                 ),
+                BlocBuilder(
+                    cubit: signupBloc,
+                    builder: (context, state) {
+                      if (state is LoadingSignupState) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is LoadedSignupState) {
+                        return Text("Success " + state.response.token);
+                      }
+                      if (state is ErrorSignupState) {
+                        return Text("Error " + state.error);
+                      } else {
+                        return Container();
+                      }
+                    }),
                 FlatButton(
                     child: Container(
                       height: 50,
@@ -183,15 +212,23 @@ class _SignupFormState extends State<SignupForm> {
                         // If the form is valid, display a snackbar.
                         // call a server or save the information in a database.
 
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Processing Data')));
-                        handleSignUpPage(
-                            _firstNameController.text,
-                            _lastNameController.text,
-                            int.parse(_phoneNumberController.text),
-                            _confirmPasswordController.text);
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
+//                        Scaffold.of(context).showSnackBar(
+//                            SnackBar(content: Text('Processing Data')));
+//                        handleSignUpPage(
+//                            _firstNameController.text,
+//                            _lastNameController.text,
+//                            int.parse(_phoneNumberController.text),
+//                            _confirmPasswordController.text);
+
+                        signupBloc.add(Signup(
+                            firstname: _firstNameController.text,
+                            lastname: _lastNameController.text,
+                            phone_number: _phoneNumberController.text,
+                            password: _passwordController.text,
+                            confirmPassword: _confirmPasswordController.text));
+
+//                        Navigator.of(context)
+//                            .popUntil((route) => route.isFirst);
                       }
                       //do something with this signup info
                     }),

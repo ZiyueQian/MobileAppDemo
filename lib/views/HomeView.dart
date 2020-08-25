@@ -7,12 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
 import 'dashBoardView.dart';
-import '../views/newDispatch/infoView.dart';
+import 'newDispatch/infoView.dart';
 import 'chart.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:greenwaydispatch/data/dispatch_bloc/bloc.dart';
 
 class HomeView extends StatefulWidget {
+  @override
+  var token;
+
+  HomeView({Key key, @required this.token}) : super(key: key);
+
   @override
   _HomeViewState createState() => _HomeViewState();
 }

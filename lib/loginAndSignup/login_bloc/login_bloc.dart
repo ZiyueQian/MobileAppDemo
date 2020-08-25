@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:chopper/chopper.dart';
-import 'package:greenwaydispatch/login/login_model/LogIn.dart';
-import 'package:greenwaydispatch/login/login_api_service/login_api_service.dart';
+import 'package:greenwaydispatch/loginAndSignUp/login_model/LogIn.dart';
+import 'package:greenwaydispatch/loginAndSignUp/login_api_service/login_api_service.dart';
 import 'bloc.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -16,7 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is Fetch) {
       Map<String, dynamic> body = {
-        "email": event.phoneNumber,
+        "phone_number": event.phone_number,
         "password": event.password
       };
 
