@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class ContainerContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -19,6 +21,96 @@ class _ContainerContactViewState extends State<ContainerContactView> {
   TextEditingController customsInputController = new TextEditingController();
   TextEditingController contactInputController = new TextEditingController();
   TextEditingController numberInputController = new TextEditingController();
+  String dropDownValue = "Select freight forwarders";
+  String _freightForwarders;
+
+  PickedFile _pickedshippingBillImage;
+  PickedFile _pickedbillLadingImage;
+  File _shippingBillFile;
+  File _billLadingFile;
+  dynamic _pickImageError;
+  final ImagePicker _picker = ImagePicker();
+
+  _choosePicture(BuildContext context, String imageType, String source) async {
+    var picture;
+    try {
+      if (source == "camera") {
+        picture = await _picker.getImage(source: ImageSource.camera);
+      } else {
+        picture = await _picker.getImage(source: ImageSource.gallery);
+      }
+      this.setState(() {
+        if (imageType == "shipping") {
+          _pickedshippingBillImage = picture;
+          _shippingBillFile = File(_pickedshippingBillImage.path);
+        } else {
+          _pickedbillLadingImage = picture;
+          _billLadingFile = File(_pickedbillLadingImage.path);
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+    }
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _showCameraDialog(BuildContext context, String imageType) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Text("Gallery"),
+                    onTap: () {
+                      _choosePicture(context, imageType, "gallery");
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text("Camera"),
+                    onTap: () {
+                      _choosePicture(context, imageType, "camera");
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _shippingBillSelection() {
+    if (_shippingBillFile != null) {
+      return Image.file(_shippingBillFile, width: 200);
+    } else if (_shippingBillFile != null) {
+      return Text(
+        'Pick image error: $_pickImageError',
+        textAlign: TextAlign.center,
+      );
+    } else {
+      return Text("Select shipping bill image",
+          style: TextStyle(fontSize: 16.0));
+    }
+  }
+
+  Widget _billLadingSelection() {
+    if (_billLadingFile != null) {
+      return Image.file(_billLadingFile, width: 200);
+    } else if (_billLadingFile != null) {
+      return Text(
+        'Pick image error: $_pickImageError',
+        textAlign: TextAlign.center,
+      );
+    } else {
+      return Text("Select bill of lading image",
+          style: TextStyle(fontSize: 16.0));
+    }
+  }
 
   void setValues(String containerNumber, String customsClearingPoint,
       String contactPerson, int contactNumber) async {
@@ -45,95 +137,193 @@ class _ContainerContactViewState extends State<ContainerContactView> {
         title: Text(
             "New dispatch ${widget.dispatch.dispatchRecord}: ${widget.dispatch.dispatchType} delivery"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 10.0),
-          Container(
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
-              child: TextFormField(
-                controller: containerInputController,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.directions_boat),
-                    labelText: 'Container number',
-                    helperText: 'e.g. ABCD123456',
-                    border: const OutlineInputBorder()),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter container number';
-                  }
-                },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckNumber = val)
-              )),
-          Container(
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
-              child: TextFormField(
-                controller: customsInputController,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.location_on),
-                    labelText: 'Customs clearing point',
-                    helperText: 'e.g. Somewhere',
-                    border: const OutlineInputBorder()),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter customs clearing point';
-                  }
-                },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckNumber = val)
-              )),
-          Container(
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
-              child: TextFormField(
-                controller: contactInputController,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.perm_identity),
-                    labelText: 'Contact person',
-                    helperText: 'e.g. Ankit Mathur',
-                    border: const OutlineInputBorder()),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return "Please enter contact person's name";
-                  }
-                },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckDriver = val)
-              )),
-          Container(
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
-              child: TextFormField(
-                controller: numberInputController,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'Contact number',
-                    helperText: 'e.g. 1234567890',
-                    border: const OutlineInputBorder()),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter phone number';
-                  }
-                },
-//                  onSaved: (val) => setState(
-//                      () => widget.dispatch.truckDriverNumber1 = val)
-              )),
-          RaisedButton(
-            child: Text("Next"),
-            onPressed: () {
-              setValues(
-                  containerInputController.text,
-                  customsInputController.text,
-                  contactInputController.text,
-                  int.parse(numberInputController.text));
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => QRView(dispatch: widget.dispatch)));
-            },
+      body: Container(
+        margin: EdgeInsets.all(20.0),
+        child: SizedBox(
+          height: 1000.0,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  controller: containerInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.directions_boat),
+                      labelText: 'Container number',
+                      border: const OutlineInputBorder()),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter container number';
+                    }
+                  },
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: customsInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.location_on),
+                      labelText: 'Port of clearance',
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: customsInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.location_on),
+                      labelText: 'Port of loading',
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: customsInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.location_on),
+                      labelText: 'Port of discharge',
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: customsInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.business),
+                      labelText: 'Shipping line',
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 20.0),
+                Row(mainAxisAlignment: MainAxisAlignment.start, children: <
+                    Widget>[
+                  Icon(
+                    Icons.storage,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  SizedBox(
+                    width: 16.0,
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      border: Border.all(
+                          color: Colors.black.withOpacity(0.5),
+                          style: BorderStyle.solid,
+                          width: 0.80),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: "Star Logistics",
+                              child: Center(child: Text("Star Logistics")),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "Aaditya Logistics",
+                              child: Center(child: Text("Aaditya Logistics")),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "Dhanlabh Logistics",
+                              child: Center(child: Text("Dhanlabh Logistics")),
+                            )
+                          ],
+                          onChanged: (_value) => {
+                                print(_value.toString()),
+                                setState(() {
+                                  _freightForwarders = _value;
+                                  dropDownValue = _value;
+                                })
+                              },
+                          hint: Text(
+                            "$dropDownValue",
+                            style: TextStyle(
+                              color:
+                                  dropDownValue == "Select freight forwarders"
+                                      ? Colors.grey[600]
+                                      : Colors.black,
+                            ),
+                          )),
+                    ),
+                  ),
+                ]),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: customsInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.directions_boat),
+                      labelText: 'Vessel name',
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  margin: EdgeInsets.only(left: 40.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      _shippingBillSelection(),
+                      RaisedButton(
+                        onPressed: () {
+                          _showCameraDialog(context, "shipping");
+                        },
+                        child: Icon(Icons.camera_alt),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  margin: EdgeInsets.only(left: 40.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      _billLadingSelection(),
+                      RaisedButton(
+                        onPressed: () {
+                          _showCameraDialog(context, "lading");
+                        },
+                        child: Icon(Icons.camera_alt),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.confirmation_number),
+                      labelText: 'E-way bill number',
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.info),
+                      labelText: 'Additional information',
+                      border: const OutlineInputBorder()),
+                ),
+                Center(
+                  child: RaisedButton(
+                    color: Colors.green,
+                    textColor: Colors.white,
+                    child: Text("Continue"),
+                    onPressed: () {
+                      setValues(
+                          containerInputController.text,
+                          customsInputController.text,
+                          contactInputController.text,
+                          int.parse(numberInputController.text));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  QRView(dispatch: widget.dispatch)));
+                    },
+                  ),
+                ),
+                //onSaved: (val) => setState(() => _user.truckNumber = val))),
+              ],
+            ),
           ),
-          //onSaved: (val) => setState(() => _user.truckNumber = val))),
-        ],
+        ),
       ),
     );
   }

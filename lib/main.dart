@@ -44,10 +44,10 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
               primarySwatch: Colors.green,
               textTheme: Theme.of(context).textTheme.apply(
-                    fontSizeDelta: 2.0,
+                    fontSizeDelta: 0.0,
                   )),
 //          home: Home(),
-          home: LoginPage(),
+          home: Home(), //change this for testing
         ));
   }
 }

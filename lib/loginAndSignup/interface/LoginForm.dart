@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greenwaydispatch/home_widget.dart';
-import 'package:greenwaydispatch/loginAndSignUp/LoginAuthentication.dart';
 import 'package:greenwaydispatch/loginAndSignUp/login_bloc/bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:greenwaydispatch/views/HomeView.dart';
@@ -43,8 +42,8 @@ class _LoginFormState extends State<LoginForm> {
     }
 
     return Center(
-      child: SafeArea(
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: SafeArea(
           child: Form(
             key: _formKey,
             child: Column(
@@ -148,14 +147,15 @@ class _LoginFormState extends State<LoginForm> {
                                   //                            token: state.login.token,
                                   )),
                           (Route<dynamic> route) => false);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Home(
-                              //                         token: state.login.token
-                              ),
-                        ),
-                      );
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                          builder: (context) => Home(
+//                              //                         token: state.login.token
+//                              ),
+//                        )
+//                        ,
+//                      );
                       return Text("Success " + state.login.token);
                     }
                     if (state is ErrorLoginState) {

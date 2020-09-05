@@ -21,7 +21,7 @@ class _$LoginApiService extends LoginApiService {
     return client.send<dynamic, dynamic>($request);
   }
 
-  Future<Response> signupUser(Map<String, dynamic> body) {
+  Future<Response> signupUser(Map<String, String> body) {
     final $url = '/signup';
     final $body = body;
     final $request = Request('POST', $url, client.baseUrl, body: $body);

@@ -13,6 +13,8 @@ class LoadedLoginState extends LoginState {
   final Login login;
 
   LoadedLoginState({@required this.login});
+  @override
+  String toString() => 'LoggedIn { token: $login }';
 }
 
 class ErrorLoginState extends LoginState {

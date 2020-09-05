@@ -7,6 +7,7 @@ import 'views/newDispatch/infoView.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/data/dispatch_bloc/dispatch_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'views/newDispatch/inOrOutBoundView.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -48,7 +49,7 @@ class _HomeState extends State<Home> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        DispatchInfoView(dispatch: newDispatch)),
+                        InOrOutBoundView(dispatch: newDispatch)),
               );
             },
           )

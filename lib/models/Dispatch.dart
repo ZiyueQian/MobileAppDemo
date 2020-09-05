@@ -115,11 +115,15 @@ class Dispatch {
         'dispatchType': dispatchType,
         'dispatchTime': dispatchTime,
         'dispatchConfirmation': dispatchConfirmation,
+        //road
         'truckNumber': truckNumber,
         'contactPerson': contactPerson,
         'contactNumber': contactNumber,
-        'alternativeContactNumber': alternativeContactNumber,
+
+        //container
         'docketNumber': docketNumber,
+
+        //hand
         'recipientPerson': recipientPerson,
         'recipientContactNumber': recipientContactNumber,
         'containerNumber': containerNumber,
@@ -128,10 +132,10 @@ class Dispatch {
       };
 
   Map<String, Icon> types() => {
-        "truck": Icon(Icons.local_shipping),
-        "logistics": Icon(Icons.local_post_office),
-        "hand": Icon(Icons.transfer_within_a_station),
-        "container": Icon(MdiIcons.package),
-        "other": Icon(Icons.group),
+        "Road": Icon(Icons.local_shipping),
+        "Courier": Icon(Icons.local_post_office),
+        "Air": Icon(Icons.airplanemode_active),
+        "Sea": Icon(Icons.directions_boat),
+        "Other": Icon(Icons.group),
       };
 }

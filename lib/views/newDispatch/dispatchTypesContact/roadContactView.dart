@@ -1,36 +1,46 @@
-//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING 'OTHER' DELIVERY METHOD
+//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING TRUCK DELIVERY
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
 
-class OtherContactView extends StatefulWidget {
+class RoadContactView extends StatefulWidget {
   final Dispatch dispatch;
+  final String area;
   //final DispatchContact dispatchContact;
-  OtherContactView({Key key, @required this.dispatch}) : super(key: key);
+  RoadContactView({Key key, @required this.dispatch, @required this.area})
+      : super(key: key);
 
   @override
-  _OtherContactViewState createState() => _OtherContactViewState();
+  _RoadContactViewState createState() => _RoadContactViewState();
 }
 
-class _OtherContactViewState extends State<OtherContactView> {
+class _RoadContactViewState extends State<RoadContactView> {
+  TextEditingController truckInputController = new TextEditingController();
+  TextEditingController driverInputController = new TextEditingController();
   TextEditingController contactInputController = new TextEditingController();
-  TextEditingController numberInputController = new TextEditingController();
-  TextEditingController descriptionInputController =
+  TextEditingController alternativeContactInputController =
       new TextEditingController();
-  String dropDownValue = "Select delivery type";
-  String _deliveryType;
+  TextEditingController ewayInputController = new TextEditingController();
 
-  void setValues(
-      String contactPerson, int contactNumber, String description) async {
+  void setValues(String truckNumber, String contactPerson, int contactNumber,
+      int alternativeContactNumber) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('truckNumber', truckNumber);
     shared.setString('contactPerson', contactPerson);
     shared.setInt('contactNumber', contactNumber);
-    shared.setString('description', description);
+    shared.setInt('alternativeContactNumber', alternativeContactNumber);
+    print("container values set!");
   }
+
+  String dropDownValue = "Select freight forwarders";
+  String _freightForwarders;
 
   PickedFile _pickedLicenseImage;
   PickedFile _pickedRegistrationImage;
@@ -38,6 +48,8 @@ class _OtherContactViewState extends State<OtherContactView> {
   File _registrationFile;
   dynamic _pickImageError;
   final ImagePicker _picker = ImagePicker();
+  Future<SharedPreferences> shared = SharedPreferences.getInstance();
+  String _area = '';
 
   _choosePicture(BuildContext context, String imageType, String source) async {
     var picture;
@@ -120,10 +132,30 @@ class _OtherContactViewState extends State<OtherContactView> {
     }
   }
 
+  Widget _internationalFields() {
+    if (widget.area == 'international') {
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 20.0),
+        child: TextFormField(
+          //              controller: driverInputController,
+          decoration: InputDecoration(
+              icon: Icon(Icons.location_on),
+              labelText: 'Border clearance point',
+              border: const OutlineInputBorder()),
+//                  onSaved: (val) =>
+//                      setState(() => widget.dispatch.truckDriver = val)
+        ),
+      );
+    } else {
+      return SizedBox(height: 20.0);
+    }
+  }
+
   void dispose() {
+    truckInputController.dispose();
+    driverInputController.dispose();
     contactInputController.dispose();
-    numberInputController.dispose();
-    descriptionInputController.dispose();
+    alternativeContactInputController.dispose();
     super.dispose();
   }
 
@@ -131,8 +163,7 @@ class _OtherContactViewState extends State<OtherContactView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "New dispatch ${widget.dispatch.dispatchRecord}: ${widget.dispatch.dispatchType} delivery"),
+        title: Text("New dispatch: ${widget.dispatch.dispatchType} delivery"),
       ),
       body: Container(
         margin: EdgeInsets.all(20.0),
@@ -144,14 +175,53 @@ class _OtherContactViewState extends State<OtherContactView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 TextFormField(
-                  controller: contactInputController,
+                  controller: truckInputController,
                   decoration: InputDecoration(
-                      icon: Icon(Icons.confirmation_number),
-                      labelText: 'Tracking number',
+                      icon: Icon(Icons.local_shipping),
+                      labelText: 'Truck number',
+                      //                        helperText: 'e.g. XX12ABC1234',
                       border: const OutlineInputBorder()),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter truck number';
+                    }
+                  },
+//                  onSaved: (val) =>
+//                      setState(() => widget.dispatch.truckNumber = val)
                 ),
                 SizedBox(height: 20.0),
-                Row(children: <Widget>[
+                TextFormField(
+                  controller: driverInputController,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.person),
+                      labelText: 'Driver name',
+                      //                        helperText: 'e.g. Ankit',
+                      border: const OutlineInputBorder()),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter driver name';
+                    }
+                  },
+//                  onSaved: (val) =>
+//                      setState(() => widget.dispatch.truckDriver = val)
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: contactInputController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: 'Contact number',
+                      border: const OutlineInputBorder()),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter phone number';
+                    }
+                  },
+                ),
+                SizedBox(height: 20.0),
+                Row(mainAxisAlignment: MainAxisAlignment.start, children: <
+                    Widget>[
                   Icon(
                     Icons.storage,
                     color: Colors.black.withOpacity(0.5),
@@ -173,54 +243,57 @@ class _OtherContactViewState extends State<OtherContactView> {
                       child: DropdownButton(
                           items: [
                             DropdownMenuItem<String>(
-                              value: "Hand delivery",
-                              child: Center(child: Text("Hand delivery")),
+                              value: "Union Roadways",
+                              child: Center(child: Text("Union Roadways")),
                             ),
                             DropdownMenuItem<String>(
-                              value: "Own car delivery",
-                              child: Center(child: Text("Own car delivery")),
+                              value: "Om Shakti Logistics",
+                              child: Center(child: Text("Om Shakti Logistics")),
                             ),
                             DropdownMenuItem<String>(
-                              value: "Local vendor",
-                              child: Center(child: Text("Local vendor")),
+                              value: "Core Logistics",
+                              child: Center(child: Text("Core Logistics")),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "Allways Best Carrier",
+                              child:
+                                  Center(child: Text("Allways Best Carrier")),
                             )
                           ],
                           onChanged: (_value) => {
                                 print(_value.toString()),
                                 setState(() {
-                                  _deliveryType = _value;
+                                  _freightForwarders = _value;
                                   dropDownValue = _value;
                                 })
                               },
                           hint: Text(
                             "$dropDownValue",
                             style: TextStyle(
-                              color: dropDownValue == "Select delivery type"
-                                  ? Colors.grey[600]
-                                  : Colors.black,
+                              color:
+                                  dropDownValue == "Select freight forwarders"
+                                      ? Colors.grey[600]
+                                      : Colors.black,
                             ),
                           )),
                     ),
                   ),
                 ]),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  controller: numberInputController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: "Person's name",
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  controller: numberInputController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.phone),
-                      labelText: 'Contact number',
-                      border: const OutlineInputBorder()),
-                ),
+                //               SizedBox(height: 20.0),
+//                TextFormField(
+//                  controller: driverInputController,
+//                  decoration: InputDecoration(
+//                      icon: Icon(Icons.person),
+//                      labelText: 'Logistics partner name',
+//                      border: const OutlineInputBorder()),
+//                  validator: (value) {
+//                    if (value.isEmpty) {
+//                      return 'Please enter driver name';
+//                    }
+//                  },
+//                  onSaved: (val) =>
+//                      setState(() => widget.dispatch.truckDriver = val)
+//                ),
                 SizedBox(height: 20.0),
                 Container(
                   margin: EdgeInsets.only(left: 40.0),
@@ -255,10 +328,37 @@ class _OtherContactViewState extends State<OtherContactView> {
                 ),
                 SizedBox(height: 20.0),
                 TextFormField(
+                  //   focusNode: nodeStoveID,
+                  keyboardType: TextInputType.visiblePassword,
+                  controller: ewayInputController,
                   decoration: InputDecoration(
-                      icon: Icon(Icons.confirmation_number),
-                      labelText: 'E-way bill number',
+                    icon: Icon(Icons.confirmation_number),
+                    labelText: 'E-way bill number',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.camera_alt,
+                        ),
+                        onPressed: scan),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter your Stove Id';
+                    }
+                    return null;
+                  },
+                  onSaved: (val) => print(val),
+                ),
+                _internationalFields(),
+                TextFormField(
+                  //       controller: ,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.info),
+                      labelText: 'Additional information',
                       border: const OutlineInputBorder()),
+//                  onSaved: (val) => setState(
+//                      () => widget.dispatch.truckDriverNumber2 = val)
                 ),
                 SizedBox(height: 20.0),
                 Center(
@@ -268,9 +368,10 @@ class _OtherContactViewState extends State<OtherContactView> {
                     child: Text("Continue"),
                     onPressed: () {
                       setValues(
-                          contactInputController.text,
-                          int.parse(numberInputController.text),
-                          descriptionInputController.text);
+                          truckInputController.text,
+                          driverInputController.text,
+                          int.parse(contactInputController.text),
+                          int.parse(alternativeContactInputController.text));
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -286,5 +387,20 @@ class _OtherContactViewState extends State<OtherContactView> {
         ),
       ),
     );
+  }
+
+  Future scan() async {
+    try {
+      String ewayQRResult = await BarcodeScanner.scan();
+      setState(() => ewayInputController.text = ewayQRResult);
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('The user did not grant the camera permission!')));
+      } else {
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text('Unknown error: $e')));
+      }
+    }
   }
 }
