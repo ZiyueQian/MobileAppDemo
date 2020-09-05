@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'LoginForm.dart';
 import 'SignupForm.dart';
+import 'package:greenwaydispatch/loginAndSignup/interface/LoginPage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../login_bloc/bloc.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,6 +26,9 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Container(
                   child: LoginForm(),
+                ),
+                SizedBox(
+                  height: 40.0,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

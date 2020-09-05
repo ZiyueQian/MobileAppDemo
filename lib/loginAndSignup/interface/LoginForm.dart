@@ -36,11 +36,50 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     _onLoginButtonPressed() {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (_formKey.currentState.validate()) {
+        // If the form is valid, display a snackbar.
+        // call a server or save the information in a database.
         form.save();
+        print("log in button pressed");
+        loginBloc.add(Fetch(
+            phone_number: _phoneNumberController.text,
+            password: _passwordController.text));
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text('Logging in')));
       }
     }
 
+//    return BlocListener<LoginBloc, LoginState>(
+//        cubit: loginBloc,
+//        listener: (BuildContext context, state) {
+//          if (state is ErrorLoginState) {
+//            Scaffold.of(context).showSnackBar(SnackBar(
+//              content: Text('Error ${state.error}'),
+//              backgroundColor: Colors.red,
+//            ));
+//          }
+//        },
+//        child: BlocBuilder<LoginBloc, LoginState>(
+//            cubit: loginBloc,
+//            builder: (context, state) {
+//              if (state is LoadedLoginState) {
+//                Navigator.pushAndRemoveUntil(
+//                    context,
+//                    MaterialPageRoute(
+//                        builder: (context) => Home(
+//                            //                            token: state.login.token,
+//                            )),
+//                    (Route<dynamic> route) => false);
+////                Navigator.push(
+////                  context,
+////                  MaterialPageRoute(
+////                    builder: (context) => Home(
+////                        //                         token: state.login.token
+////                        ),
+////                  ),
+////                );
+//                return Text("Success " + state.login.token);
+//              }
     return Center(
       child: SingleChildScrollView(
         child: SafeArea(
@@ -120,59 +159,58 @@ class _LoginFormState extends State<LoginForm> {
                           color: Colors.green),
                     ),
                     onPressed: () {
-                      //do something with this login info
-                      if (_formKey.currentState.validate()) {
-                        // If the form is valid, display a snackbar.
-                        // call a server or save the information in a database.
-                        loginBloc.add(Fetch(
-                            phone_number: _phoneNumberController.text,
-                            password: _passwordController.text));
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Signing up')));
-                      }
+                      print("pressing!");
+                      _onLoginButtonPressed();
+//                                state is! LoadingLoginState
+//                                    ? _onLoginButtonPressed
+//                                    : null;
                     }),
-                BlocBuilder(
-                  cubit: loginBloc,
-                  builder: (context, state) {
-                    if (state is LoadingLoginState) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (state is LoadedLoginState) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Home(
-                                  //                            token: state.login.token,
-                                  )),
-                          (Route<dynamic> route) => false);
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(
-//                          builder: (context) => Home(
-//                              //                         token: state.login.token
-//                              ),
-//                        )
-//                        ,
+//                          Container(
+//                            child: state is LoadingLoginState
+//                                ? Center(child: CircularProgressIndicator())
+//                                : null,
+//                          )
+
+//                BlocBuilder(
+//                  cubit: loginBloc,
+//                  builder: (context, state) {
+//                    if (state is LoadingLoginState) {
+//                      return Center(
+//                        child: CircularProgressIndicator(),
 //                      );
-                      return Text("Success " + state.login.token);
-                    }
-                    if (state is ErrorLoginState) {
-                      return Text("Error" + state.error);
-                    } else {
-                      return Home();
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                )
+//                    }
+//                    if (state is LoadedLoginState) {
+//                      Navigator.pushAndRemoveUntil(
+//                          context,
+//                          MaterialPageRoute(
+//                              builder: (context) => Home(
+//                                  //                            token: state.login.token,
+//                                  )),
+//                          (Route<dynamic> route) => false);
+////                      Navigator.push(
+////                        context,
+////                        MaterialPageRoute(
+////                          builder: (context) => Home(
+////                              //                         token: state.login.token
+////                              ),
+////                        )
+////                        ,
+////                      );
+//                      return Text("Success " + state.login.token);
+//                    }
+//                    if (state is ErrorLoginState) {
+//                      return Text("Error" + state.error);
+//                    } else {
+//                      return Home();
+//                    }
+//                  },
+//                ),
               ],
             ),
           ),
         ),
       ),
     );
+    //          }));
   }
 }

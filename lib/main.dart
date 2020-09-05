@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greenwaydispatch/data/dispatch_bloc/dispatch_bloc.dart';
+import 'package:greenwaydispatch/loginAndSignup/login_bloc/bloc.dart';
 import 'home_widget.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -11,6 +12,7 @@ import 'dispatchesService.dart';
 import 'package:greenwaydispatch/loginAndSignup/interface/LoginPage.dart';
 import 'package:provider/provider.dart';
 import 'package:greenwaydispatch/api/post_api_service.dart';
+import 'package:greenwaydispatch/views/SplashPage.dart';
 
 void setupLocator() {
   GetIt.I.registerLazySingleton(() => DispatchesService());
@@ -28,6 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  LoginBloc loginBloc;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -38,6 +41,9 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(create: (BuildContext context) {
             return HistoryBloc();
           }),
+          BlocProvider(create: (BuildContext context) {
+            return LoginBloc();
+          }),
         ],
         child: MaterialApp(
           title: 'Dispatch Executive App',
@@ -46,8 +52,25 @@ class _MyAppState extends State<MyApp> {
               textTheme: Theme.of(context).textTheme.apply(
                     fontSizeDelta: 0.0,
                   )),
-//          home: Home(),
-          home: Home(), //change this for testing
+          //         home: LoginPage(),
+          routes: {
+            '/': (context) {
+              return BlocListener<LoginBloc, LoginState>(
+                cubit: loginBloc,
+                listener: (BuildContext context, state) {},
+                child: BlocBuilder<LoginBloc, LoginState>(
+                  builder: (BuildContext context, LoginState state) {
+                    if (state is LoadedLoginState) {
+                      print("here!");
+                      return Home(token: state.login.token);
+                    }
+                    return LoginPage();
+                  },
+                ),
+              );
+            },
+          },
+          //     home: LoginPage(), //change this for testing
         ));
   }
 }

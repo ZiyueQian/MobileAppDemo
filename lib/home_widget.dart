@@ -11,9 +11,16 @@ import 'views/newDispatch/inOrOutBoundView.dart';
 
 class Home extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _HomeState();
-  }
+  final String token;
+
+  Home({Key key, @required this.token}) : super(key: key);
+
+//  State<StatefulWidget> createState() {
+//    return _HomeState();
+//  }
+
+  @override
+  _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {

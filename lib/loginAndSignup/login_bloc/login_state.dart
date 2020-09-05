@@ -1,6 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:meta/meta.dart';
 import 'package:greenwaydispatch/loginAndSignUp/login_model/LogIn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @immutable
 abstract class LoginState {}
@@ -22,3 +23,5 @@ class ErrorLoginState extends LoginState {
 
   ErrorLoginState({@required this.error});
 }
+
+class LoggedOutState extends LoginState {}

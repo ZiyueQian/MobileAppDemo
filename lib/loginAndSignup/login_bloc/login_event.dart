@@ -16,6 +16,8 @@ class LoggedOut extends LoginEvent {
   String toString() => 'LoggedOut';
 }
 
+class AppStarted extends LoginEvent {}
+
 class LoggedIn extends LoginEvent {
   final Login login;
 

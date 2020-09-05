@@ -14,9 +14,7 @@ import 'package:greenwaydispatch/data/dispatch_bloc/bloc.dart';
 
 class HomeView extends StatefulWidget {
   @override
-  var token;
-
-  HomeView({Key key, @required this.token}) : super(key: key);
+  HomeView({Key key}) : super(key: key);
 
   @override
   _HomeViewState createState() => _HomeViewState();

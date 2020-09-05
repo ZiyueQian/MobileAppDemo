@@ -7,7 +7,7 @@ import 'package:greenwaydispatch/loginAndSignUp/login_api_service/login_api_serv
 import 'bloc.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoadingLoginState());
+  LoginBloc() : super(InitialLoginState());
 
   @override
   LoginState get initialState => InitialLoginState();
@@ -33,10 +33,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield ErrorLoginState(error: e.toString());
       }
     }
-//    if (event is LoggedIn) {
-//      yield LoadingLoginState();
-//      await userRepository.persistToken(event.token);
-//      yield AuthenticationAuthenticated();
-//    }
+    if (event is LoggedOut) {
+      yield LoadingLoginState();
+      //delete token
+      yield LoggedOutState();
+    }
   }
 }
