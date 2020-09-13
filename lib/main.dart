@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
                       print("here!");
                       return Home(token: state.login.token);
                     }
-                    return LoginPage();
+                    return Home();
                   },
                 ),
               );
