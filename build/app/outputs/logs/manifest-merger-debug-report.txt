@@ -6,6 +6,9 @@ INJECTED from /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/android/
 INJECTED from /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/android/app/src/main/AndroidManifest.xml:1:1-48:12
 MERGED from /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/android/app/src/main/AndroidManifest.xml:1:1-48:12
 MERGED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-17:12
+MERGED from [:shared_preferences] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-22:12
+MERGED from [:flutter_plugin_android_lifecycle] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:path_provider] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.0.0] /Users/angelaqian/.gradle/caches/transforms-2/files-2.1/db2388f0fe5e05a7a168e5a9c11e912f/material-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat:1.0.2] /Users/angelaqian/.gradle/caches/transforms-2/files-2.1/dd2ecfcfb369a2f0046b9c1c6d80939e/appcompat-1.0.2/AndroidManifest.xml:17:1-22:12
@@ -70,6 +73,8 @@ application
 ADDED from /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/android/app/src/main/AndroidManifest.xml:9:5-47:19
 MERGED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-15:19
 MERGED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-15:19
+MERGED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-20:19
+MERGED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-20:19
 MERGED from [com.google.android.material:material:1.0.0] /Users/angelaqian/.gradle/caches/transforms-2/files-2.1/db2388f0fe5e05a7a168e5a9c11e912f/material-1.0.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.0.0] /Users/angelaqian/.gradle/caches/transforms-2/files-2.1/db2388f0fe5e05a7a168e5a9c11e912f/material-1.0.0/AndroidManifest.xml:22:5-20
 MERGED from [me.dm7.barcodescanner:zxing:1.9.13] /Users/angelaqian/.gradle/caches/transforms-2/files-2.1/c15f2e194b51694bbd66aeda415aab9d/zxing-1.9.13/AndroidManifest.xml:11:5-20
@@ -136,6 +141,12 @@ INJECTED from /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/android/
 INJECTED from /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/android/app/src/main/AndroidManifest.xml
 MERGED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:shared_preferences] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:path_provider] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:path_provider] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.material:material:1.0.0] /Users/angelaqian/.gradle/caches/transforms-2/files-2.1/db2388f0fe5e05a7a168e5a9c11e912f/material-1.0.0/AndroidManifest.xml:20:5-44
@@ -226,3 +237,27 @@ activity#de.mintware.barcode_scan.BarcodeScannerActivity
 ADDED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:14:9-84
 	android:name
 		ADDED from [:barcode_scan] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/barcode_scan/intermediates/library_manifest/debug/AndroidManifest.xml:14:19-81
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
+	android:name
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-77
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-81
+	android:name
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-78
+provider#io.flutter.plugins.imagepicker.ImagePickerFileProvider
+ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:11:9-19:20
+	android:grantUriPermissions
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-47
+	android:authorities
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-74
+	android:exported
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-37
+	android:name
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:12:13-82
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-18:75
+	android:resource
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-72
+	android:name
+		ADDED from [:image_picker] /Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:17:17-67

@@ -7,10 +7,12 @@ import 'package:greenwaydispatch/views/dispatchDetailsView.dart';
 import 'package:intl/intl.dart';
 import '../models/Dispatch.dart';
 import 'dispatchDetailsView.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+//import 'package:hive/hive.dart';
+//import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'historyDetailsView.dart';
+import 'package:greenwaydispatch/data/history_bloc/historyBloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HistoryView extends StatefulWidget {
   @override
@@ -18,7 +20,15 @@ class HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<HistoryView> {
-  final historyBox = Hive.box('history');
+  HistoryBloc _historyBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _historyBloc = BlocProvider.of<HistoryBloc>(context);
+    _historyBloc.add(LoadHistory());
+    print("initialized history!");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +38,41 @@ class _HistoryViewState extends State<HistoryView> {
           shrinkWrap: true,
           padding: EdgeInsets.all(15.0),
           children: <Widget>[
-            Text('History of dispatches:',
+            Text('History of dispatches',
                 style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
-            SizedBox(height: 8.0),
-            WatchBoxBuilder(
-                box: Hive.box('history'),
-                builder: (context, dispatchBox) {
-                  if (dispatchBox.isEmpty) {
-                    return Text("Nothing to dispatch!");
-                  } else {
-                    return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: historyBox.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          buildDispatchCard(context, index),
+            SizedBox(height: 20.0),
+            BlocBuilder(
+                cubit: _historyBloc,
+                builder: (BuildContext context, HistoryState state) {
+                  if (state is HistoryLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
+                  } else if (state is HistoryLoaded &&
+                      state.dispatches.length == 0) {
+                    return Text(
+                      "No dispatches!",
+                    );
+                  } else if (state is HistoryLoaded &&
+                      state.dispatches.length != 0) {
+                    print("building listView");
+                    return SingleChildScrollView(
+                      physics: ScrollPhysics(),
+                      child: ListView.builder(
+                          itemCount: state.dispatches.length,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            print("printing history");
+                            final displayedDispatch = state.dispatches[index];
+                            return buildDispatchCard(displayedDispatch);
+                          }),
+                    );
+                  } else {
+                    return SizedBox(width: 20.0);
                   }
                 }),
             SizedBox(height: 8.0),
@@ -54,19 +80,31 @@ class _HistoryViewState extends State<HistoryView> {
         ));
   }
 
-  Widget buildDispatchCard(BuildContext context, int index) {
-    final dispatch = historyBox.getAt(index) as Dispatch;
-
+  Widget buildDispatchCard(Dispatch dispatch) {
     //matching the dispatch type to the correct icon
     var dispatchIcon = Icon(Icons.group);
-    if (dispatch.dispatchType == 'truck') {
-      dispatchIcon = Icon(Icons.local_shipping);
-    } else if (dispatch.dispatchType == 'logistics') {
-      dispatchIcon = Icon(Icons.local_post_office);
-    } else if (dispatch.dispatchType == 'hand') {
-      dispatchIcon = Icon(Icons.transfer_within_a_station);
-    } else if (dispatch.dispatchType == 'container') {
-      dispatchIcon = Icon(MdiIcons.package);
+    if (dispatch.dispatchType != null) {
+      if (dispatch.dispatchType.toLowerCase() == 'road') {
+        dispatchIcon = Icon(Icons.local_shipping);
+      } else if (dispatch.dispatchType.toLowerCase() == 'courier') {
+        dispatchIcon = Icon(Icons.local_post_office);
+      } else if (dispatch.dispatchType.toLowerCase() == 'air') {
+        dispatchIcon = Icon(Icons.airplanemode_active);
+      } else if (dispatch.dispatchType.toLowerCase() == 'rail') {
+        dispatchIcon = Icon(MdiIcons.package);
+      } else if (dispatch.dispatchType.toLowerCase() == 'sea') {
+        dispatchIcon = Icon(Icons.directions_boat);
+      } else {
+        dispatchIcon = Icon(Icons.group);
+      }
+    }
+    String _dispatchRecord = "";
+    if (dispatch.dispatchRecord != null) {
+      _dispatchRecord = dispatch.dispatchRecord;
+    }
+    String _dispatchAmount = "";
+    if (dispatch.dispatchAmount != null) {
+      _dispatchAmount = dispatch.dispatchAmount.toString();
     }
 
     return new Container(
@@ -84,7 +122,7 @@ class _HistoryViewState extends State<HistoryView> {
                         width: 60.0,
                       ),
                       Text(
-                        dispatch.dispatchRecord,
+                        _dispatchRecord,
                         style: new TextStyle(fontSize: 20.0),
                       ),
                     ],
@@ -98,7 +136,7 @@ class _HistoryViewState extends State<HistoryView> {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(2.0),
                           ),
-                          child: Text(dispatch.dispatchAmount.toString())),
+                          child: Text(_dispatchAmount)),
                       SizedBox(width: 10.0),
                       Icon(Icons.keyboard_arrow_right),
                     ],
@@ -111,12 +149,13 @@ class _HistoryViewState extends State<HistoryView> {
               )
             ])),
         onTap: () {
+          print("history -> details view");
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HistoryDetailsView(
-                        index: index,
+                  builder: (context) => DispatchDetailsView(
                         dispatch: dispatch,
+                        dispatchNow: false,
                       )));
         },
       ),

@@ -272,6 +272,10 @@
         "source": "/Users/angelaqian/.gradle/caches/transforms-2/files-2.1/dd2ecfcfb369a2f0046b9c1c6d80939e/appcompat-1.0.2/res/layout/abc_select_dialog_material.xml"
     },
     {
+        "merged": "/Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/app/intermediates/res/merged/debug/xml_flutter_image_picker_file_paths.xml.flat",
+        "source": "/Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/image_picker/intermediates/packaged_res/debug/xml/flutter_image_picker_file_paths.xml"
+    },
+    {
         "merged": "/Users/angelaqian/AndroidStudioProjects/greenway_dispatch/build/app/intermediates/res/merged/debug/drawable-xhdpi-v4_abc_ic_star_half_black_16dp.png.flat",
         "source": "/Users/angelaqian/.gradle/caches/transforms-2/files-2.1/dd2ecfcfb369a2f0046b9c1c6d80939e/appcompat-1.0.2/res/drawable-xhdpi-v4/abc_ic_star_half_black_16dp.png"
     },
