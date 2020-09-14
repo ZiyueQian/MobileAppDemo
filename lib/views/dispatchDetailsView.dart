@@ -36,7 +36,7 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Dispatch ${widget.dispatch.dispatchRecord}"),
+          title: Text("Reference number: ${widget.dispatch.dispatchRecord}"),
         ),
         body: Container(
           margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
@@ -63,17 +63,29 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
   Widget dispatchButton(bool dispatchNow, BuildContext context) {
     if (dispatchNow == true) {
       return Expanded(
-        child: Align(
-            alignment: Alignment.bottomCenter,
-            child: RaisedButton(
-                color: Colors.green,
-                textColor: Colors.white,
-                child: Text("Dispatch"),
-                onPressed: () {
-                  _historyBloc.add(AddHistory(widget.dispatch));
-                  _dispatchBloc.add(DeleteDispatch(widget.dispatch));
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                })),
+        child: FlatButton(
+            child: Container(
+              height: 50,
+              // margin: EdgeInsets.symmetric(horizontal: 60),
+              child: Center(
+                child: Text(
+                  "Dispatch now",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+              decoration: BoxDecoration(
+                  // color: Color(0xFF8BC34A),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.green),
+            ),
+            onPressed: () {
+              _historyBloc.add(AddHistory(widget.dispatch));
+              _dispatchBloc.add(DeleteDispatch(widget.dispatch));
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            }),
       );
     } else {
       return Text("");
@@ -81,18 +93,18 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
   }
 
   Widget moreInfo(Dispatch dispatch) {
-    if (dispatch.dispatchType.toLowerCase() == 'truck') {
+    if (dispatch.dispatchType == 'road') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Truck delivery", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text("Road delivery", style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Truck number: ${dispatch.truckNumber}"),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Alternative contact: ${dispatch.alternativeContactNumber}"),
         ],
       );
-    } else if (dispatch.dispatchType.toLowerCase() == 'courier') {
+    } else if (dispatch.dispatchType == 'courier') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -103,7 +115,7 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
           Text("Docket number: ${dispatch.docketNumber}"),
         ],
       );
-    } else if (dispatch.dispatchType.toLowerCase() == 'sea') {
+    } else if (dispatch.dispatchType == 'sea') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -114,7 +126,7 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
           Text("Customs clearing point: ${dispatch.customsClearingPoint}"),
         ],
       );
-    } else if (dispatch.dispatchType.toLowerCase() == 'air') {
+    } else if (dispatch.dispatchType == 'air') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -125,11 +137,11 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
           Text("Recipient contact number: ${dispatch.recipientContactNumber}"),
         ],
       );
-    } else if (dispatch.dispatchType.toLowerCase() == 'rail') {
+    } else if (dispatch.dispatchType == 'rail') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Truck delivery", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text("Rail delivery", style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Description: ${dispatch.description}"),

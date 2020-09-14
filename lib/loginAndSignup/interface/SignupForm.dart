@@ -220,16 +220,16 @@ class _SignupFormState extends State<SignupForm> {
 //                            int.parse(_phoneNumberController.text),
 //                            _confirmPasswordController.text);
 
-                          signupBloc.add(Signup(
-                              firstname: _firstNameController.text,
-                              lastname: _lastNameController.text,
-                              phone_number: _phoneNumberController.text,
-                              password: _passwordController.text,
-                              confirmPassword:
-                                  _confirmPasswordController.text));
+//                          signupBloc.add(Signup(
+//                              firstname: _firstNameController.text,
+//                              lastname: _lastNameController.text,
+//                              phone_number: _phoneNumberController.text,
+//                              password: _passwordController.text,
+//                              confirmPassword:
+//                                  _confirmPasswordController.text));
 
-//                        Navigator.of(context)
-//                            .popUntil((route) => route.isFirst);
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                         }
                         //do something with this signup info
                       }),

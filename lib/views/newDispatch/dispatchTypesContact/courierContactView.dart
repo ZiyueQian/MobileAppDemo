@@ -148,28 +148,59 @@ class _CourierContactViewState extends State<CourierContactView> {
                     labelText: 'Additional information',
                     border: const OutlineInputBorder()),
               ),
-              SizedBox(height: 20.0),
-              Center(
-                child: RaisedButton(
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  child: Text("Continue"),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      setValues(
-                          trackingNumberController.text,
-                          _logisticsVendor,
-                          int.parse(contactNumberController.text),
-                          additionalInfoController.text);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  QRView(dispatch: widget.dispatch)));
-                    }
-                  },
+              SizedBox(height: 40.0),
+              FlatButton(
+                child: Container(
+                  height: 50,
+                  child: Center(
+                    child: Text(
+                      "Continue",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.green),
                 ),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    setValues(
+                        trackingNumberController.text,
+                        _logisticsVendor,
+                        int.parse(contactNumberController.text),
+                        additionalInfoController.text);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                QRView(dispatch: widget.dispatch)));
+                  }
+                },
               ),
+//              Center(
+//                child: RaisedButton(
+//                  color: Colors.green,
+//                  textColor: Colors.white,
+//                  child: Text("Continue"),
+//                  onPressed: () {
+//                    if (_formKey.currentState.validate()) {
+//                      setValues(
+//                          trackingNumberController.text,
+//                          _logisticsVendor,
+//                          int.parse(contactNumberController.text),
+//                          additionalInfoController.text);
+//                      Navigator.push(
+//                          context,
+//                          MaterialPageRoute(
+//                              builder: (context) =>
+//                                  QRView(dispatch: widget.dispatch)));
+//                    }
+//                  },
+//                ),
+//              ),
               //onSaved: (val) => setState(() => _user.truckNumber = val))),
             ],
           ),

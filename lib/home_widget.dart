@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'views/HomeView.dart';
 import 'views/HistoryView.dart';
+import 'views/ProfileView.dart';
 import 'views/newDispatch/infoView.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/data/dispatch_bloc/dispatch_bloc.dart';
@@ -28,6 +29,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _screens = [
     HomeView(),
     HistoryView(),
+    ProfileView(),
   ];
 
   DispatchBloc _dispatchBloc;
@@ -74,7 +76,9 @@ class _HomeState extends State<Home> {
               icon: new Icon(Icons.assignment), title: new Text("Home")),
           BottomNavigationBarItem(
               icon: new Icon(Icons.assignment_turned_in),
-              title: new Text("History"))
+              title: new Text("History")),
+          BottomNavigationBarItem(
+              icon: new Icon(Icons.person), title: new Text("Profile"))
         ],
       ),
     );

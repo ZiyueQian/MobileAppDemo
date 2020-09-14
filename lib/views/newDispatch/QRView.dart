@@ -209,30 +209,52 @@ class _QRViewState extends State<QRView> {
             onSaved: (val) => print(val),
           ),
           SizedBox(
-            height: 20.0,
+            height: 40.0,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              RaisedButton(
-                color: Colors.green,
-                textColor: Colors.white,
-                child: Text("To be dispatched"),
-                onPressed: () {
-                  saveToDatabase(false);
-                  setState(() {
-                    _futureDispatch = savetoServer();
-                  });
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
-              ),
-              SizedBox(
-                width: 20.0,
-              ),
-              RaisedButton(
-                color: Colors.green,
-                textColor: Colors.white,
-                child: Text("Dispatch Now"),
+              FlatButton(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        "Dispatch later",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.green),
+                  ),
+                  onPressed: () {
+                    saveToDatabase(false);
+                    setState(() {
+                      _futureDispatch = savetoServer();
+                    });
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }),
+              FlatButton(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  height: 50,
+                  child: Center(
+                    child: Text(
+                      "Dispatch now",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.green),
+                ),
                 onPressed: () {
                   saveToDatabase(true);
                   setState(() {
@@ -240,7 +262,20 @@ class _QRViewState extends State<QRView> {
                   });
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
-              )
+              ),
+
+//              RaisedButton(
+//                color: Colors.green,
+//                textColor: Colors.white,
+//                child: Text("Dispatch Now"),
+//                onPressed: () {
+//                  saveToDatabase(true);
+//                  setState(() {
+//                    _futureDispatch = savetoServer();
+//                  });
+//                  Navigator.of(context).popUntil((route) => route.isFirst);
+//                },
+//              )
             ],
           ),
         ]),

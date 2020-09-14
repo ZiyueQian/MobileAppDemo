@@ -6,7 +6,7 @@ import 'package:greenwaydispatch/loginAndSignUp/login_api_service/login_api_serv
 import './bloc.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  SignupBloc() : super(LoadingSignupState());
+  SignupBloc() : super(InitialSignupState());
 
   @override
   SignupState get initialState => InitialSignupState();

@@ -63,7 +63,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
   String selectedStove = '';
 
   List<bool> isSelectedIntlTransportation = [false, false, false, false];
-  List<String> intlTransporationList = ["Road", "Air", "Sea", "Other"];
+  List<String> intlTransporationList = ["road", "air", "sea", "other"];
   List<bool> isSelectedDomesticTransportation = [
     false,
     false,
@@ -72,11 +72,11 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
     false
   ];
   List<String> domesticTransporationList = [
-    "Road",
-    "Air",
-    "Courier",
-    "Rail",
-    "Other"
+    "road",
+    "air",
+    "courier",
+    "rail",
+    "other"
   ];
   String selectedTransporation = '';
 
@@ -337,51 +337,62 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
 //                  ),
 //                ),
                 Center(
-                  child: RaisedButton(
-                    color: Colors.green,
-                    textColor: Colors.white,
-                    child: Text("Continue"),
+                  child: FlatButton(
+                    child: Container(
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green),
+                    ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
                         widget.dispatch.dispatchType =
                             selectedTransportationCard;
-                        _dispatchType = selectedTransportationCard;
                         setValues(
                           _dispatchConfirmation,
                           recordInputController.text,
                           selectedStove,
                           int.parse(amountInputController.text),
                           widget.area,
-                          _dispatchType,
+                          selectedTransporation,
                         );
-                        if (selectedTransporation == 'Road') {
+                        if (selectedTransporation == 'road') {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => RoadContactView(
                                       dispatch: widget.dispatch,
                                       area: widget.area)));
-                        } else if (selectedTransporation == 'Courier') {
+                        } else if (selectedTransporation == 'courier') {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CourierContactView(
                                       dispatch: widget.dispatch,
                                       area: widget.area)));
-                        } else if (selectedTransporation == 'Sea') {
+                        } else if (selectedTransporation == 'sea') {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ContainerContactView(
                                       dispatch: widget.dispatch)));
-                        } else if (selectedTransporation == 'Air') {
+                        } else if (selectedTransporation == 'air') {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AirContactView(
                                       dispatch: widget.dispatch)));
-                        } else if (selectedTransporation == 'Rail') {
+                        } else if (selectedTransporation == 'rail') {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -399,6 +410,7 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                     },
                   ),
                 ),
+                SizedBox(height: 40.0)
                 //onSaved: (val) => setState(() => _user.truckNumber = val))),
               ],
             ),

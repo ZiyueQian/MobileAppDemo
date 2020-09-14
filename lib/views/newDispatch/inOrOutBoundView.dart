@@ -145,10 +145,22 @@ class _InOrOutBoundViewState extends State<InOrOutBoundView> {
                   Expanded(
                     child: Align(
                         alignment: Alignment.bottomCenter,
-                        child: RaisedButton(
-                            color: Colors.green,
-                            textColor: Colors.white,
-                            child: Text("Continue"),
+                        child: FlatButton(
+                            child: Container(
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "Continue",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.green),
+                            ),
                             onPressed: () {
                               Navigator.push(
                                   context,

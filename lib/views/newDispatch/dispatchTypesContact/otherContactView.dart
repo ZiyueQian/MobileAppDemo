@@ -279,36 +279,76 @@ class _OtherContactViewState extends State<OtherContactView> {
                     ),
                     onSaved: (val) => print(val),
                   ),
-                  SizedBox(height: 20.0),
-                  Center(
-                    child: RaisedButton(
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      child: Text("Continue"),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          int _contactNumber;
-                          if (contactNumberController.text != "") {
-                            _contactNumber =
-                                int.parse(contactNumberController.text);
-                            print("not null");
-                          }
-                          setValues(
-                              trackingNumberController.text,
-                              _deliveryType,
-                              contactNameController.text,
-                              _contactNumber,
-                              ewayBillController.text);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      QRView(dispatch: widget.dispatch)));
-                        }
-                      },
+                  SizedBox(height: 40.0),
+                  FlatButton(
+                    child: Container(
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green),
                     ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        int _contactNumber;
+                        if (contactNumberController.text != "") {
+                          _contactNumber =
+                              int.parse(contactNumberController.text);
+                          print("not null");
+                        }
+                        setValues(
+                            trackingNumberController.text,
+                            _deliveryType,
+                            contactNameController.text,
+                            _contactNumber,
+                            ewayBillController.text);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    QRView(dispatch: widget.dispatch)));
+                      }
+                    },
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(
+                    height: 40.0,
+                  )
+//                  Center(
+//                    child: RaisedButton(
+//                      color: Colors.green,
+//                      textColor: Colors.white,
+//                      child: Text("Continue"),
+//                      onPressed: () {
+//                        if (_formKey.currentState.validate()) {
+//                          int _contactNumber;
+//                          if (contactNumberController.text != "") {
+//                            _contactNumber =
+//                                int.parse(contactNumberController.text);
+//                            print("not null");
+//                          }
+//                          setValues(
+//                              trackingNumberController.text,
+//                              _deliveryType,
+//                              contactNameController.text,
+//                              _contactNumber,
+//                              ewayBillController.text);
+//                          Navigator.push(
+//                              context,
+//                              MaterialPageRoute(
+//                                  builder: (context) =>
+//                                      QRView(dispatch: widget.dispatch)));
+//                        }
+//                      },
+//                    ),
+//                  ),
                   //onSaved: (val) => setState(() => _user.truckNumber = val))),
                 ],
               ),

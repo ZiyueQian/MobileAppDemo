@@ -83,16 +83,28 @@ class _HistoryViewState extends State<HistoryView> {
   Widget buildDispatchCard(Dispatch dispatch) {
     //matching the dispatch type to the correct icon
     var dispatchIcon = Icon(Icons.group);
-    if (dispatch.dispatchType == 'truck') {
-      dispatchIcon = Icon(Icons.local_shipping);
-    } else if (dispatch.dispatchType == 'logistics') {
-      dispatchIcon = Icon(Icons.local_post_office);
-    } else if (dispatch.dispatchType == 'hand') {
-      dispatchIcon = Icon(Icons.transfer_within_a_station);
-    } else if (dispatch.dispatchType == 'container') {
-      dispatchIcon = Icon(MdiIcons.package);
-    } else {
-      dispatchIcon = Icon(Icons.group);
+    if (dispatch.dispatchType != null) {
+      if (dispatch.dispatchType.toLowerCase() == 'road') {
+        dispatchIcon = Icon(Icons.local_shipping);
+      } else if (dispatch.dispatchType.toLowerCase() == 'courier') {
+        dispatchIcon = Icon(Icons.local_post_office);
+      } else if (dispatch.dispatchType.toLowerCase() == 'air') {
+        dispatchIcon = Icon(Icons.airplanemode_active);
+      } else if (dispatch.dispatchType.toLowerCase() == 'rail') {
+        dispatchIcon = Icon(MdiIcons.package);
+      } else if (dispatch.dispatchType.toLowerCase() == 'sea') {
+        dispatchIcon = Icon(Icons.directions_boat);
+      } else {
+        dispatchIcon = Icon(Icons.group);
+      }
+    }
+    String _dispatchRecord = "";
+    if (dispatch.dispatchRecord != null) {
+      _dispatchRecord = dispatch.dispatchRecord;
+    }
+    String _dispatchAmount = "";
+    if (dispatch.dispatchAmount != null) {
+      _dispatchAmount = dispatch.dispatchAmount.toString();
     }
 
     return new Container(
@@ -110,7 +122,7 @@ class _HistoryViewState extends State<HistoryView> {
                         width: 60.0,
                       ),
                       Text(
-                        dispatch.dispatchRecord,
+                        _dispatchRecord,
                         style: new TextStyle(fontSize: 20.0),
                       ),
                     ],
@@ -124,7 +136,7 @@ class _HistoryViewState extends State<HistoryView> {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(2.0),
                           ),
-                          child: Text(dispatch.dispatchAmount.toString())),
+                          child: Text(_dispatchAmount)),
                       SizedBox(width: 10.0),
                       Icon(Icons.keyboard_arrow_right),
                     ],

@@ -132,10 +132,10 @@ class Dispatch {
       };
 
   Map<String, Icon> types() => {
-        "Road": Icon(Icons.local_shipping),
-        "Courier": Icon(Icons.local_post_office),
-        "Air": Icon(Icons.airplanemode_active),
-        "Sea": Icon(Icons.directions_boat),
-        "Other": Icon(Icons.group),
+        "road": Icon(Icons.local_shipping),
+        "courier": Icon(Icons.local_post_office),
+        "air": Icon(Icons.airplanemode_active),
+        "sea": Icon(Icons.directions_boat),
+        "other": Icon(Icons.group),
       };
 }
