@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/roadContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/courierContactView.dart';
-import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/containerContactView.dart';
+import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/seaContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/airContactView.dart';
+import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/railContactView.dart';
 import 'package:greenwaydispatch/views/newDispatch/dispatchTypesContact/otherContactView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -379,6 +380,12 @@ class _DispatchInfoViewState extends State<DispatchInfoView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AirContactView(
+                                      dispatch: widget.dispatch)));
+                        } else if (selectedTransporation == 'Rail') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RailContactView(
                                       dispatch: widget.dispatch)));
                         } else {
                           Navigator.push(

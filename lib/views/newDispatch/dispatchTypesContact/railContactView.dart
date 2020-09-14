@@ -1,4 +1,4 @@
-//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING AIR DELIVERY
+//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING RAIL DELIVERY
 
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
@@ -6,35 +6,30 @@ import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:greenwaydispatch/views/newDispatch/functions/scan.dart';
 
-class AirContactView extends StatefulWidget {
+class RailContactView extends StatefulWidget {
   final Dispatch dispatch;
   //final DispatchContact dispatchContact;
-  AirContactView({Key key, @required this.dispatch}) : super(key: key);
+  RailContactView({Key key, @required this.dispatch}) : super(key: key);
 
   @override
-  _AirContactViewState createState() => _AirContactViewState();
+  _RailContactViewState createState() => _RailContactViewState();
 }
 
-class _AirContactViewState extends State<AirContactView> {
+class _RailContactViewState extends State<RailContactView> {
   var _formKey = GlobalKey<FormState>();
   TextEditingController trackingNumberController = new TextEditingController();
   TextEditingController ewayBillController = new TextEditingController();
   TextEditingController additionalInfoController = new TextEditingController();
-  String dropDownValueLogistics = "Select logistics vendor";
-  String _logisticsVendor;
   String dropDownValueFreight = "Select freight forwarders";
   String _freightForwarders;
 
-  void setValues(String trackingNumber, String logisticsVendor,
-      String freightForwarders, String ewayBillNo, String additional) async {
+  void setValues(String trackingNumber, String freightForwarders,
+      String ewayBillNo, String additional) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
     shared.setString('trackingNumber', trackingNumber);
-    shared.setString('logisticsVendor', logisticsVendor);
     shared.setString('freightForwarders', freightForwarders);
     shared.setString('ewayBillNo', ewayBillNo);
     shared.setString('additional', additional);
-
-    print('set air values');
   }
 
   void dispose() {
@@ -48,7 +43,7 @@ class _AirContactViewState extends State<AirContactView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New dispatch: Air delivery"),
+        title: Text("New dispatch: Rail delivery"),
       ),
       body: Container(
         margin: EdgeInsets.all(20.0),
@@ -69,66 +64,6 @@ class _AirContactViewState extends State<AirContactView> {
                   }
                 },
               ),
-              SizedBox(height: 20.0),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(
-                      Icons.storage,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    SizedBox(
-                      width: 16.0,
-                    ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        border: Border.all(
-                            color: Colors.black.withOpacity(0.5),
-                            style: BorderStyle.solid,
-                            width: 0.80),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                            items: [
-                              DropdownMenuItem<String>(
-                                value: "FedEx",
-                                child: Center(child: Text("FedEx")),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "TNT",
-                                child: Center(child: Text("TNT")),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "DHL",
-                                child: Center(child: Text("DHL")),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "IndiaPost",
-                                child: Center(child: Text("IndiaPost")),
-                              )
-                            ],
-                            onChanged: (_value) => {
-                                  print(_value.toString()),
-                                  setState(() {
-                                    _logisticsVendor = _value;
-                                    dropDownValueLogistics = _value;
-                                  })
-                                },
-                            hint: Text(
-                              "$dropDownValueLogistics",
-                              style: TextStyle(
-                                color: dropDownValueLogistics ==
-                                        "Select logistics vendor"
-                                    ? Colors.grey[600]
-                                    : Colors.black,
-                              ),
-                            )),
-                      ),
-                    ),
-                  ]),
               SizedBox(height: 20.0),
               Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -217,6 +152,7 @@ class _AirContactViewState extends State<AirContactView> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                controller: additionalInfoController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     icon: Icon(Icons.info),
@@ -230,12 +166,6 @@ class _AirContactViewState extends State<AirContactView> {
                   textColor: Colors.white,
                   child: Text("Continue"),
                   onPressed: () {
-                    setValues(
-                        trackingNumberController.text,
-                        _logisticsVendor,
-                        _freightForwarders,
-                        ewayBillController.text,
-                        additionalInfoController.text);
                     if (_formKey.currentState.validate()) {
                       Navigator.push(
                           context,

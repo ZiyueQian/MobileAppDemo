@@ -6,6 +6,7 @@ import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:greenwaydispatch/views/newDispatch/functions/scan.dart';
 
 class OtherContactView extends StatefulWidget {
   final Dispatch dispatch;
@@ -17,19 +18,22 @@ class OtherContactView extends StatefulWidget {
 }
 
 class _OtherContactViewState extends State<OtherContactView> {
-  TextEditingController contactInputController = new TextEditingController();
-  TextEditingController numberInputController = new TextEditingController();
-  TextEditingController descriptionInputController =
-      new TextEditingController();
+  var _formKey = GlobalKey<FormState>();
+  TextEditingController trackingNumberController = new TextEditingController();
+  TextEditingController contactNameController = new TextEditingController();
+  TextEditingController contactNumberController = new TextEditingController();
+  TextEditingController ewayBillController = new TextEditingController();
   String dropDownValue = "Select delivery type";
   String _deliveryType;
 
-  void setValues(
-      String contactPerson, int contactNumber, String description) async {
+  void setValues(String trackingNumber, String deliveryType, String contactName,
+      int contactNumber, String ewayBillNo) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
-    shared.setString('contactPerson', contactPerson);
+    shared.setString('trackingNumber', trackingNumber);
+    shared.setString('deliveryType', deliveryType);
+    shared.setString('contactName', contactName);
     shared.setInt('contactNumber', contactNumber);
-    shared.setString('description', description);
+    shared.setString('ewayBillNo', ewayBillNo);
   }
 
   PickedFile _pickedLicenseImage;
@@ -121,9 +125,9 @@ class _OtherContactViewState extends State<OtherContactView> {
   }
 
   void dispose() {
-    contactInputController.dispose();
-    numberInputController.dispose();
-    descriptionInputController.dispose();
+    trackingNumberController.dispose();
+    contactNameController.dispose();
+    contactNumberController.dispose();
     super.dispose();
   }
 
@@ -131,156 +135,183 @@ class _OtherContactViewState extends State<OtherContactView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "New dispatch ${widget.dispatch.dispatchRecord}: ${widget.dispatch.dispatchType} delivery"),
+        title: Text("New dispatch: other delivery"),
       ),
       body: Container(
         margin: EdgeInsets.all(20.0),
         child: SizedBox(
-          height: 1000.0,
+          height: 1500.0,
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  controller: contactInputController,
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.confirmation_number),
-                      labelText: 'Tracking number',
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 20.0),
-                Row(children: <Widget>[
-                  Icon(
-                    Icons.storage,
-                    color: Colors.black.withOpacity(0.5),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    controller: trackingNumberController,
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.confirmation_number),
+                        labelText: 'Tracking number',
+                        border: const OutlineInputBorder()),
                   ),
-                  SizedBox(
-                    width: 16.0,
+                  SizedBox(height: 20.0),
+                  Row(children: <Widget>[
+                    Icon(
+                      Icons.storage,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                    SizedBox(
+                      width: 16.0,
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0),
+                        border: Border.all(
+                            color: Colors.black.withOpacity(0.5),
+                            style: BorderStyle.solid,
+                            width: 0.80),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                            items: [
+                              DropdownMenuItem<String>(
+                                value: "Hand delivery",
+                                child: Center(child: Text("Hand delivery")),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "Own car delivery",
+                                child: Center(child: Text("Own car delivery")),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "Local vendor",
+                                child: Center(child: Text("Local vendor")),
+                              )
+                            ],
+                            onChanged: (_value) => {
+                                  print(_value.toString()),
+                                  setState(() {
+                                    _deliveryType = _value;
+                                    dropDownValue = _value;
+                                  })
+                                },
+                            hint: Text(
+                              "$dropDownValue",
+                              style: TextStyle(
+                                color: dropDownValue == "Select delivery type"
+                                    ? Colors.grey[600]
+                                    : Colors.black,
+                              ),
+                            )),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    controller: contactNameController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.person),
+                        labelText: "Person's name",
+                        border: const OutlineInputBorder()),
                   ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    controller: contactNumberController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.phone),
+                        labelText: 'Contact number',
+                        border: const OutlineInputBorder()),
+                  ),
+                  SizedBox(height: 20.0),
                   Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4.0),
-                      border: Border.all(
-                          color: Colors.black.withOpacity(0.5),
-                          style: BorderStyle.solid,
-                          width: 0.80),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                          items: [
-                            DropdownMenuItem<String>(
-                              value: "Hand delivery",
-                              child: Center(child: Text("Hand delivery")),
-                            ),
-                            DropdownMenuItem<String>(
-                              value: "Own car delivery",
-                              child: Center(child: Text("Own car delivery")),
-                            ),
-                            DropdownMenuItem<String>(
-                              value: "Local vendor",
-                              child: Center(child: Text("Local vendor")),
-                            )
-                          ],
-                          onChanged: (_value) => {
-                                print(_value.toString()),
-                                setState(() {
-                                  _deliveryType = _value;
-                                  dropDownValue = _value;
-                                })
-                              },
-                          hint: Text(
-                            "$dropDownValue",
-                            style: TextStyle(
-                              color: dropDownValue == "Select delivery type"
-                                  ? Colors.grey[600]
-                                  : Colors.black,
-                            ),
-                          )),
+                    margin: EdgeInsets.only(left: 40.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        _licenseSelection(),
+                        RaisedButton(
+                          onPressed: () {
+                            _showCameraDialog(context, "license");
+                          },
+                          child: Icon(Icons.camera_alt),
+                        )
+                      ],
                     ),
                   ),
-                ]),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  controller: numberInputController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: "Person's name",
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  controller: numberInputController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.phone),
-                      labelText: 'Contact number',
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  margin: EdgeInsets.only(left: 40.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      _licenseSelection(),
-                      RaisedButton(
-                        onPressed: () {
-                          _showCameraDialog(context, "license");
-                        },
-                        child: Icon(Icons.camera_alt),
-                      )
-                    ],
+                  SizedBox(height: 20.0),
+                  Container(
+                    margin: EdgeInsets.only(left: 40.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        _registrationSelection(),
+                        RaisedButton(
+                          onPressed: () {
+                            _showCameraDialog(context, "registration");
+                          },
+                          child: Icon(Icons.camera_alt),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  margin: EdgeInsets.only(left: 40.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      _registrationSelection(),
-                      RaisedButton(
-                        onPressed: () {
-                          _showCameraDialog(context, "registration");
-                        },
-                        child: Icon(Icons.camera_alt),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: InputDecoration(
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: ewayBillController,
+                    decoration: InputDecoration(
                       icon: Icon(Icons.confirmation_number),
                       labelText: 'E-way bill number',
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 20.0),
-                Center(
-                  child: RaisedButton(
-                    color: Colors.green,
-                    textColor: Colors.white,
-                    child: Text("Continue"),
-                    onPressed: () {
-                      setValues(
-                          contactInputController.text,
-                          int.parse(numberInputController.text),
-                          descriptionInputController.text);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  QRView(dispatch: widget.dispatch)));
-                    },
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.camera_alt,
+                        ),
+                        onPressed: () {
+                          scanEwayBill(context).then((val) => setState(() {
+                                ewayBillController.text = val;
+                              }));
+                        },
+                      ),
+                    ),
+                    onSaved: (val) => print(val),
                   ),
-                ),
-                //onSaved: (val) => setState(() => _user.truckNumber = val))),
-              ],
+                  SizedBox(height: 20.0),
+                  Center(
+                    child: RaisedButton(
+                      color: Colors.green,
+                      textColor: Colors.white,
+                      child: Text("Continue"),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          int _contactNumber;
+                          if (contactNumberController.text != "") {
+                            _contactNumber =
+                                int.parse(contactNumberController.text);
+                            print("not null");
+                          }
+                          setValues(
+                              trackingNumberController.text,
+                              _deliveryType,
+                              contactNameController.text,
+                              _contactNumber,
+                              ewayBillController.text);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      QRView(dispatch: widget.dispatch)));
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  //onSaved: (val) => setState(() => _user.truckNumber = val))),
+                ],
+              ),
             ),
           ),
         ),

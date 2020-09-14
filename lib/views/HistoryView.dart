@@ -43,7 +43,7 @@ class _HistoryViewState extends State<HistoryView> {
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
-            SizedBox(height: 8.0),
+            SizedBox(height: 20.0),
             BlocBuilder(
                 cubit: _historyBloc,
                 builder: (BuildContext context, HistoryState state) {
@@ -51,7 +51,13 @@ class _HistoryViewState extends State<HistoryView> {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (state is HistoryLoaded) {
+                  } else if (state is HistoryLoaded &&
+                      state.dispatches.length == 0) {
+                    return Text(
+                      "No dispatches!",
+                    );
+                  } else if (state is HistoryLoaded &&
+                      state.dispatches.length != 0) {
                     print("building listView");
                     return SingleChildScrollView(
                       physics: ScrollPhysics(),
@@ -65,6 +71,8 @@ class _HistoryViewState extends State<HistoryView> {
                             return buildDispatchCard(displayedDispatch);
                           }),
                     );
+                  } else {
+                    return SizedBox(width: 20.0);
                   }
                 }),
             SizedBox(height: 8.0),

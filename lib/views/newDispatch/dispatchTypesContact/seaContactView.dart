@@ -1,58 +1,63 @@
-//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING TRUCK DELIVERY
+//THIS PAGE SHOWS THE CONTACT INFORMATION AFTER CHOOSING CONTAINER DELIVERY
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:greenwaydispatch/models/Dispatch.dart';
 import 'package:greenwaydispatch/views/newDispatch/QRView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter/services.dart';
 import 'package:greenwaydispatch/views/newDispatch/functions/scan.dart';
 
-class RoadContactView extends StatefulWidget {
+class ContainerContactView extends StatefulWidget {
   final Dispatch dispatch;
-  final String area;
   //final DispatchContact dispatchContact;
-  RoadContactView({Key key, @required this.dispatch, @required this.area})
-      : super(key: key);
+  ContainerContactView({Key key, @required this.dispatch}) : super(key: key);
 
   @override
-  _RoadContactViewState createState() => _RoadContactViewState();
+  _ContainerContactViewState createState() => _ContainerContactViewState();
 }
 
-class _RoadContactViewState extends State<RoadContactView> {
+class _ContainerContactViewState extends State<ContainerContactView> {
   var _formKey = GlobalKey<FormState>();
-  TextEditingController truckNumberController = new TextEditingController();
-  TextEditingController contactNameController = new TextEditingController();
-  TextEditingController contactNumberController = new TextEditingController();
-  TextEditingController additionalInfoController = new TextEditingController();
+  TextEditingController containerNumberController = new TextEditingController();
+  TextEditingController portOfClearanceController = new TextEditingController();
+  TextEditingController portOfLoadingController = new TextEditingController();
+  TextEditingController portOfDischargeController = new TextEditingController();
+  TextEditingController shippingLineController = new TextEditingController();
+  TextEditingController vesselNameController = new TextEditingController();
   TextEditingController ewayBillController = new TextEditingController();
-
-  void setValues(String truckNumber, String contactName, int contactNumber,
-      String freightForwarders, String additional, String ewayBillNo) async {
-    SharedPreferences shared = await SharedPreferences.getInstance();
-    shared.setString('truckNumber', truckNumber);
-    shared.setString('contactName', contactName);
-    shared.setString('freightForwarders', freightForwarders);
-    shared.setInt('contactNumber', contactNumber);
-    shared.setString('ewayBillNo', ewayBillNo);
-    shared.setString('additional', additional);
-    print("road values set!");
-  }
-
+  TextEditingController additionalInfoController = new TextEditingController();
   String dropDownValue = "Select freight forwarders";
   String _freightForwarders;
 
-  PickedFile _pickedLicenseImage;
-  PickedFile _pickedRegistrationImage;
-  File _licenseFile;
-  File _registrationFile;
+  PickedFile _pickedshippingBillImage;
+  PickedFile _pickedbillLadingImage;
+  File _shippingBillFile;
+  File _billLadingFile;
   dynamic _pickImageError;
   final ImagePicker _picker = ImagePicker();
-  Future<SharedPreferences> shared = SharedPreferences.getInstance();
-  String _area = '';
+
+  void setValues(
+      String containerNumber,
+      String portOfClearance,
+      String portOfLoading,
+      String portOfDischarge,
+      String shippingLine,
+      String vesselName,
+      String ewayBillNo,
+      String additional) async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    shared.setString('containerNumber', containerNumber);
+    shared.setString('portOfClearance', portOfClearance);
+    shared.setString('portOfLoading', portOfLoading);
+    shared.setString('portOfDischarge', portOfDischarge);
+    shared.setString('shippingLine', shippingLine);
+    shared.setString('vesselName', vesselName);
+    shared.setString('ewayBillNo', ewayBillNo);
+    shared.setString('additional', additional);
+
+    print('set sea values');
+  }
 
   _choosePicture(BuildContext context, String imageType, String source) async {
     var picture;
@@ -63,12 +68,12 @@ class _RoadContactViewState extends State<RoadContactView> {
         picture = await _picker.getImage(source: ImageSource.gallery);
       }
       this.setState(() {
-        if (imageType == "license") {
-          _pickedLicenseImage = picture;
-          _licenseFile = File(_pickedLicenseImage.path);
+        if (imageType == "shipping") {
+          _pickedshippingBillImage = picture;
+          _shippingBillFile = File(_pickedshippingBillImage.path);
         } else {
-          _pickedRegistrationImage = picture;
-          _registrationFile = File(_pickedRegistrationImage.path);
+          _pickedbillLadingImage = picture;
+          _billLadingFile = File(_pickedbillLadingImage.path);
         }
       });
     } catch (e) {
@@ -107,59 +112,43 @@ class _RoadContactViewState extends State<RoadContactView> {
         });
   }
 
-  Widget _licenseSelection() {
-    if (_licenseFile != null) {
-      return Image.file(_licenseFile, width: 200);
-    } else if (_licenseFile != null) {
+  Widget _shippingBillSelection() {
+    if (_shippingBillFile != null) {
+      return Image.file(_shippingBillFile, width: 200);
+    } else if (_shippingBillFile != null) {
       return Text(
         'Pick image error: $_pickImageError',
         textAlign: TextAlign.center,
       );
     } else {
-      return Text("Select driver's license image",
+      return Text("Select shipping bill image",
           style: TextStyle(fontSize: 16.0));
     }
   }
 
-  Widget _registrationSelection() {
-    if (_registrationFile != null) {
-      return Image.file(_registrationFile, width: 200);
-    } else if (_registrationFile != null) {
+  Widget _billLadingSelection() {
+    if (_billLadingFile != null) {
+      return Image.file(_billLadingFile, width: 200);
+    } else if (_billLadingFile != null) {
       return Text(
         'Pick image error: $_pickImageError',
         textAlign: TextAlign.center,
       );
     } else {
-      return Text("Select registration copy image",
+      return Text("Select bill of lading image",
           style: TextStyle(fontSize: 16.0));
-    }
-  }
-
-  Widget _internationalFields() {
-    if (widget.area == 'international') {
-      return Container(
-        margin: EdgeInsets.symmetric(vertical: 20.0),
-        child: TextFormField(
-          //              controller: driverInputController,
-          decoration: InputDecoration(
-              icon: Icon(Icons.location_on),
-              labelText: 'Border clearance point',
-              border: const OutlineInputBorder()),
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckDriver = val)
-        ),
-      );
-    } else {
-      return SizedBox(height: 20.0);
     }
   }
 
   void dispose() {
-    truckNumberController.dispose();
-    contactNameController.dispose();
-    contactNumberController.dispose();
-    additionalInfoController.dispose();
+    containerNumberController.dispose();
+    portOfClearanceController.dispose();
+    portOfLoadingController.dispose();
+    portOfDischargeController.dispose();
+    shippingLineController.dispose();
+    vesselNameController.dispose();
     ewayBillController.dispose();
+    additionalInfoController.dispose();
     super.dispose();
   }
 
@@ -167,7 +156,7 @@ class _RoadContactViewState extends State<RoadContactView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New dispatch: road delivery"),
+        title: Text("New dispatch: sea delivery"),
       ),
       body: Container(
         margin: EdgeInsets.all(20.0),
@@ -181,49 +170,49 @@ class _RoadContactViewState extends State<RoadContactView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   TextFormField(
-                    controller: truckNumberController,
+                    controller: containerNumberController,
                     decoration: InputDecoration(
-                        icon: Icon(Icons.local_shipping),
-                        labelText: 'Truck number',
-                        //                        helperText: 'e.g. XX12ABC1234',
+                        icon: Icon(Icons.directions_boat),
+                        labelText: 'Container number',
                         border: const OutlineInputBorder()),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter truck number';
+                    validator: (val) {
+                      if (val.isEmpty) {
+                        return 'Please enter the container number';
                       }
+                      return null;
                     },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckNumber = val)
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
-                    controller: contactNameController,
+                    controller: portOfClearanceController,
                     decoration: InputDecoration(
-                        icon: Icon(Icons.person),
-                        labelText: 'Driver name',
-                        //                        helperText: 'e.g. Ankit',
+                        icon: Icon(Icons.location_on),
+                        labelText: 'Port of clearance',
                         border: const OutlineInputBorder()),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter driver name';
-                      }
-                    },
-//                  onSaved: (val) =>
-//                      setState(() => widget.dispatch.truckDriver = val)
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
-                    controller: contactNumberController,
-                    keyboardType: TextInputType.number,
+                    controller: portOfLoadingController,
                     decoration: InputDecoration(
-                        icon: Icon(Icons.phone),
-                        labelText: 'Contact number',
+                        icon: Icon(Icons.location_on),
+                        labelText: 'Port of loading',
                         border: const OutlineInputBorder()),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter phone number';
-                      }
-                    },
+                  ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    controller: portOfDischargeController,
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.location_on),
+                        labelText: 'Port of discharge',
+                        border: const OutlineInputBorder()),
+                  ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    controller: shippingLineController,
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.business),
+                        labelText: 'Shipping line',
+                        border: const OutlineInputBorder()),
                   ),
                   SizedBox(height: 20.0),
                   Row(mainAxisAlignment: MainAxisAlignment.start, children: <
@@ -249,22 +238,17 @@ class _RoadContactViewState extends State<RoadContactView> {
                         child: DropdownButton(
                             items: [
                               DropdownMenuItem<String>(
-                                value: "Union Roadways",
-                                child: Center(child: Text("Union Roadways")),
+                                value: "Star Logistics",
+                                child: Center(child: Text("Star Logistics")),
                               ),
                               DropdownMenuItem<String>(
-                                value: "Om Shakti Logistics",
+                                value: "Aaditya Logistics",
+                                child: Center(child: Text("Aaditya Logistics")),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "Dhanlabh Logistics",
                                 child:
-                                    Center(child: Text("Om Shakti Logistics")),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "Core Logistics",
-                                child: Center(child: Text("Core Logistics")),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "Allways Best Carrier",
-                                child:
-                                    Center(child: Text("Allways Best Carrier")),
+                                    Center(child: Text("Dhanlabh Logistics")),
                               )
                             ],
                             onChanged: (_value) => {
@@ -287,15 +271,23 @@ class _RoadContactViewState extends State<RoadContactView> {
                     ),
                   ]),
                   SizedBox(height: 20.0),
+                  TextFormField(
+                    controller: vesselNameController,
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.directions_boat),
+                        labelText: 'Vessel name',
+                        border: const OutlineInputBorder()),
+                  ),
+                  SizedBox(height: 20.0),
                   Container(
                     margin: EdgeInsets.only(left: 40.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        _licenseSelection(),
+                        _shippingBillSelection(),
                         RaisedButton(
                           onPressed: () {
-                            _showCameraDialog(context, "license");
+                            _showCameraDialog(context, "shipping");
                           },
                           child: Icon(Icons.camera_alt),
                         )
@@ -308,10 +300,10 @@ class _RoadContactViewState extends State<RoadContactView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        _registrationSelection(),
+                        _billLadingSelection(),
                         RaisedButton(
                           onPressed: () {
-                            _showCameraDialog(context, "registration");
+                            _showCameraDialog(context, "lading");
                           },
                           child: Icon(Icons.camera_alt),
                         )
@@ -320,7 +312,6 @@ class _RoadContactViewState extends State<RoadContactView> {
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
-                    //   focusNode: nodeStoveID,
                     keyboardType: TextInputType.visiblePassword,
                     controller: ewayBillController,
                     decoration: InputDecoration(
@@ -338,9 +329,8 @@ class _RoadContactViewState extends State<RoadContactView> {
                         },
                       ),
                     ),
-                    onSaved: (val) => print(val),
                   ),
-                  _internationalFields(),
+                  SizedBox(height: 20.0),
                   TextFormField(
                     controller: additionalInfoController,
                     keyboardType: TextInputType.number,
@@ -348,8 +338,6 @@ class _RoadContactViewState extends State<RoadContactView> {
                         icon: Icon(Icons.info),
                         labelText: 'Additional information',
                         border: const OutlineInputBorder()),
-//                  onSaved: (val) => setState(
-//                      () => widget.dispatch.truckDriverNumber2 = val)
                   ),
                   SizedBox(height: 20.0),
                   Center(
@@ -359,13 +347,15 @@ class _RoadContactViewState extends State<RoadContactView> {
                       child: Text("Continue"),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          setValues(
-                              truckNumberController.text,
-                              contactNameController.text,
-                              int.parse(contactNumberController.text),
-                              _freightForwarders,
-                              additionalInfoController.text,
-                              ewayBillController.text);
+//                          setValues(
+//                              containerNumberController.text,
+//                              portOfClearanceController.text,
+//                              portOfLoadingController.text,
+//                              portOfDischargeController.text,
+//                              shippingLineController.text,
+//                              vesselNameController.text,
+//                              ewayBillController.text,
+//                              additionalInfoController.text);
                           Navigator.push(
                               context,
                               MaterialPageRoute(

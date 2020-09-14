@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:greenwaydispatch/models/Dispatch_insert.dart';
 import 'package:greenwaydispatch/data/api_response.dart';
+import 'package:greenwaydispatch/views/newDispatch/functions/scan.dart';
 
 class QRView extends StatefulWidget {
   final Dispatch dispatch;
@@ -35,6 +36,7 @@ class _QRViewState extends State<QRView> {
   HistoryBloc _historyBloc;
   HistoryDAO _historyDAO = HistoryDAO();
   Future<Dispatch> _futureDispatch;
+  TextEditingController ewayBillController = new TextEditingController();
 
   String dispatchRecord;
   int dispatchAmount;
@@ -73,11 +75,11 @@ class _QRViewState extends State<QRView> {
     SharedPreferences shared = await SharedPreferences.getInstance();
 
     //basic dispatch info - exists for all dispatches
-    dispatchRecord = shared.getString('dispatchRecord');
-    dispatchAmount = shared.getInt('dispatchAmount');
+    dispatchRecord = shared.getString('referenceNumber');
+    dispatchAmount = shared.getInt('quantity');
     dispatchType = shared.getString('dispatchType');
-    dispatchConfirmation = shared.getString('dispatchConfirmation');
-    contactPerson = shared.getString('contactPerson');
+    dispatchConfirmation = shared.getString('referenceDocument');
+    contactPerson = shared.getString('contactName');
     contactNumber = shared.getInt('contactNumber');
     DateTime now = DateTime.now();
     dispatchTime = DateFormat('yyyy-MM-dd kk:mm').format(now);
@@ -177,38 +179,44 @@ class _QRViewState extends State<QRView> {
             APIResponse<bool>(error: true, errorMessage: 'An error occured'));
   }
 
-  Future scan() async {
-    try {
-      qrResult = await BarcodeScanner.scan();
-      setState(() => widget.dispatch.dispatchRecord = qrResult);
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this.qrResult = 'The user did not grant the camera permission!';
-        });
-      } else {
-        setState(() => this.qrResult = 'Unknown error: $e');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "New dispatch ${widget.dispatch.dispatchRecord}: ${widget.dispatch.dispatchType} delivery"),
+        title: Text("New dispatch: ${widget.dispatch.dispatchType} delivery"),
       ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          RaisedButton(
-            child: Text("Scan QR Code"),
-            onPressed: scan,
+      body: Container(
+        margin: EdgeInsets.all(20.0),
+        child: Column(children: <Widget>[
+          TextFormField(
+            keyboardType: TextInputType.visiblePassword,
+            controller: ewayBillController,
+            decoration: InputDecoration(
+              icon: Icon(Icons.confirmation_number),
+              labelText: 'Stove ID',
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  Icons.camera_alt,
+                ),
+                onPressed: () {
+                  scanEwayBill(context).then((val) => setState(() {
+                        ewayBillController.text = val;
+                      }));
+                },
+              ),
+            ),
+            onSaved: (val) => print(val),
+          ),
+          SizedBox(
+            height: 20.0,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               RaisedButton(
+                color: Colors.green,
+                textColor: Colors.white,
                 child: Text("To be dispatched"),
                 onPressed: () {
                   saveToDatabase(false);
@@ -218,7 +226,12 @@ class _QRViewState extends State<QRView> {
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
+              SizedBox(
+                width: 20.0,
+              ),
               RaisedButton(
+                color: Colors.green,
+                textColor: Colors.white,
                 child: Text("Dispatch Now"),
                 onPressed: () {
                   saveToDatabase(true);
@@ -230,7 +243,7 @@ class _QRViewState extends State<QRView> {
               )
             ],
           ),
-        ],
+        ]),
       ),
     );
   }

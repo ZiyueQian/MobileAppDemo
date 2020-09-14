@@ -1,4 +1,4 @@
-//THIS IS THE PAGE FOR THE HISTORY TAB ON THE HOME SCREEN.
+//THIS IS THE PAGE FOR THE HOME TAB ON THE HOME SCREEN.
 //CURRENTLY USING DUMMY DATA TO SIMULATE INFORMATION FOR WHAT'S BEEN DISPATCHED.
 
 import 'package:flutter/cupertino.dart';
@@ -33,7 +33,7 @@ class _HomeViewState extends State<HomeView>
   void initState() {
     Future.delayed(Duration.zero, () async {
       _dispatchBloc = BlocProvider.of<DispatchBloc>(context);
-      _dispatchBloc.fetchDispatches();
+      //_dispatchBloc.fetchDispatches();
       //_dispatchBloc.postDispatches();
       _dispatchBloc.add(LoadDispatches());
     });
@@ -57,7 +57,7 @@ class _HomeViewState extends State<HomeView>
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.green)),
-            SizedBox(height: 8.0),
+            SizedBox(height: 20.0),
             BlocBuilder(
                 cubit: _dispatchBloc,
                 builder: (BuildContext context, DispatchState state) {
@@ -65,7 +65,13 @@ class _HomeViewState extends State<HomeView>
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (state is DispatchesLoaded) {
+                  } else if (state is DispatchesLoaded &&
+                      state.dispatches.length == 0) {
+                    return Text(
+                      "Nothing to dispatch!",
+                    );
+                  } else if (state is DispatchesLoaded &&
+                      state.dispatches.length != 0) {
                     return SingleChildScrollView(
                       physics: ScrollPhysics(),
                       child: ListView.builder(
@@ -74,9 +80,13 @@ class _HomeViewState extends State<HomeView>
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
                             final displayedDispatch = state.dispatches[index];
+                            print("LENGTH:");
+                            print(state.dispatches.length);
                             return buildDispatchCard(displayedDispatch);
                           }),
                     );
+                  } else {
+                    return SizedBox(width: 20.0);
                   }
                 }),
             SizedBox(height: 8.0),

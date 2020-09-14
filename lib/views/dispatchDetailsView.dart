@@ -41,14 +41,18 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
         body: Container(
           margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
           child: Container(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text("Amount: ${widget.dispatch.dispatchAmount}"),
+                  SizedBox(height: 5.0),
                   Text("Type: ${widget.dispatch.dispatchType}"),
+                  SizedBox(height: 5.0),
                   Text("Date: ${widget.dispatch.dispatchTime}"),
+                  SizedBox(height: 5.0),
                   Text("Confirmation: ${widget.dispatch.dispatchConfirmation}"),
+                  SizedBox(height: 20.0),
                   moreInfo(widget.dispatch),
                   dispatchButton(widget.dispatchNow, context)
                 ],
@@ -77,53 +81,65 @@ class _DispatchDetailsViewState extends State<DispatchDetailsView> {
   }
 
   Widget moreInfo(Dispatch dispatch) {
-    print('hello');
-    if (dispatch.dispatchType == 'truck') {
+    if (dispatch.dispatchType.toLowerCase() == 'truck') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text("Truck delivery", style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Truck number: ${dispatch.truckNumber}"),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Alternative contact: ${dispatch.alternativeContactNumber}"),
         ],
       );
-    } else if (dispatch.dispatchType == 'logistics') {
+    } else if (dispatch.dispatchType.toLowerCase() == 'courier') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text("Courier delivery",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Docket number: ${dispatch.docketNumber}"),
         ],
       );
-    } else if (dispatch.dispatchType == 'container') {
+    } else if (dispatch.dispatchType.toLowerCase() == 'sea') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text("Sea delivery", style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Container number: ${dispatch.containerNumber}"),
           Text("Customs clearing point: ${dispatch.customsClearingPoint}"),
         ],
       );
-    } else if (dispatch.dispatchType == 'hand') {
+    } else if (dispatch.dispatchType.toLowerCase() == 'air') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text("Air delivery", style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Recipient person: ${dispatch.recipientPerson}"),
           Text("Recipient contact number: ${dispatch.recipientContactNumber}"),
         ],
       );
-    } else if (dispatch.dispatchType == 'other') {
+    } else if (dispatch.dispatchType.toLowerCase() == 'rail') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Text("Truck delivery", style: TextStyle(fontWeight: FontWeight.bold)),
           Text("Contact person: ${dispatch.contactPerson}"),
           Text("Contact number: ${dispatch.contactNumber}"),
           Text("Description: ${dispatch.description}"),
+        ],
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("Other delivery", style: TextStyle(fontWeight: FontWeight.bold))
         ],
       );
     }

@@ -49,18 +49,18 @@ class DispatchBloc extends Bloc<DispatchEvent, DispatchState> {
     yield DispatchesLoaded(dispatches);
   }
 
-  Future<void> fetchDispatches() async {
-    var response = await http.get(apiURL);
-    var jsonResponse = convert.jsonDecode(response.body);
-    var dispatchesJson = jsonResponse as List;
-    List<Dispatch> dispatches = List<Dispatch>();
-
-    dispatchesJson.forEach((dispatch) {
-      _dispatchDAO.insert(Dispatch.fromJson(dispatch));
-    });
-
-    return dispatches;
-  }
+//  Future<void> fetchDispatches() async {
+//    var response = await http.get(apiURL);
+//    var jsonResponse = convert.jsonDecode(response.body);
+//    var dispatchesJson = jsonResponse as List;
+//    List<Dispatch> dispatches = List<Dispatch>();
+//
+//    dispatchesJson.forEach((dispatch) {
+//      _dispatchDAO.insert(Dispatch.fromJson(dispatch));
+//    });
+//
+//    return dispatches;
+//  }
 
   Future<APIResponse<bool>> createDispatch(DispatchInsert item) {
     var dispatch = {

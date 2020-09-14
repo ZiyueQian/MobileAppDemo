@@ -9,19 +9,11 @@ abstract class DispatchEvent extends Equatable {
 
 class LoadDispatches extends DispatchEvent {}
 
-//class LoadHistory extends DispatchEvent {}
-
 class AddDispatch extends DispatchEvent {
   final Dispatch newDispatch;
 
   AddDispatch(this.newDispatch) : super([newDispatch]);
 }
-
-//class AddHistory extends DispatchEvent {
-//  final Dispatch newDispatch;
-//
-//  AddHistory(this.newDispatch) : super([newDispatch]);
-//}
 
 class DeleteDispatch extends DispatchEvent {
   final Dispatch dispatch;

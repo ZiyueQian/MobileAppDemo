@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
               primarySwatch: Colors.green,
               textTheme: Theme.of(context).textTheme.apply(
-                    fontSizeDelta: 0.0,
+                    fontSizeDelta: 1.5,
                   )),
           //         home: LoginPage(),
           routes: {
