@@ -41,10 +41,10 @@ class _LoginFormState extends State<LoginForm> {
         // call a server or save the information in a database.
         form.save();
         print("log in button pressed");
-        Navigator.pushReplacementNamed(context, '/home');
-//        loginBloc.add(Fetch(
-//            phone_number: _phoneNumberController.text,
-//            password: _passwordController.text));
+        Navigator.pushReplacementNamed(context, '/');
+        loginBloc.add(Fetch(
+            phone_number: _phoneNumberController.text,
+            password: _passwordController.text));
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text('Logging in')));
       }

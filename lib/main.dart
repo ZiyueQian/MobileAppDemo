@@ -21,7 +21,17 @@ void setupLocator() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
-  runApp(MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (BuildContext context) {
+      return DispatchBloc();
+    }),
+    BlocProvider(create: (BuildContext context) {
+      return HistoryBloc();
+    }),
+    BlocProvider(create: (BuildContext context) {
+      return LoginBloc();
+    }),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -33,46 +43,34 @@ class _MyAppState extends State<MyApp> {
   LoginBloc loginBloc;
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (BuildContext context) {
-            return DispatchBloc();
-          }),
-          BlocProvider(create: (BuildContext context) {
-            return HistoryBloc();
-          }),
-          BlocProvider(create: (BuildContext context) {
-            return LoginBloc();
-          }),
-        ],
-        child: MaterialApp(
-          title: 'Dispatch Executive App',
-          theme: ThemeData(
-              primarySwatch: Colors.green,
-              textTheme: Theme.of(context).textTheme.apply(
-                    fontSizeDelta: 1.5,
-                  )),
-          //         home: LoginPage(),
-          routes: {
-            '/': (context) {
-              return BlocListener<LoginBloc, LoginState>(
-                cubit: loginBloc,
-                listener: (BuildContext context, state) {},
-                child: BlocBuilder<LoginBloc, LoginState>(
-                  builder: (BuildContext context, LoginState state) {
-                    if (state is LoadedLoginState) {
-                      print("here!");
-                      return Home(token: state.login.token);
-                    }
-                    //return Home();
-                    return LoginPage();
-                  },
-                ),
-              );
-            },
-            '/home': (context) => Home(),
-          },
-          //     home: LoginPage(), //change this for testing
-        ));
+    return MaterialApp(
+      title: 'Dispatch Executive App',
+      theme: ThemeData(
+          primarySwatch: Colors.green,
+          textTheme: Theme.of(context).textTheme.apply(
+                fontSizeDelta: 1.5,
+              )),
+      //         home: LoginPage(),
+      routes: {
+        '/': (context) {
+          return BlocListener<LoginBloc, LoginState>(
+            cubit: loginBloc,
+            listener: (BuildContext context, state) {},
+            child: BlocBuilder<LoginBloc, LoginState>(
+              builder: (BuildContext context, LoginState state) {
+                if (state is LoadedLoginState) {
+                  print("loaded log in!");
+                  return Home(token: state.login.token);
+                }
+                //return Home();
+                return LoginPage();
+              },
+            ),
+          );
+        },
+        '/home': (context) => Home(),
+      },
+      //     home: LoginPage(), //change this for testing
+    );
   }
 }
